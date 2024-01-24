@@ -6,11 +6,11 @@ namespace webapi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RandomCalcController: ControllerBase
+    public class RandomCalculationController: ControllerBase
     {
-        private readonly ILogger<RandomCalcController> _logger;
+        private readonly ILogger<RandomCalculationController> _logger;
 
-        public RandomCalcController(ILogger<RandomCalcController> logger)
+        public RandomCalculationController(ILogger<RandomCalculationController> logger)
         {
             _logger = logger;
         }

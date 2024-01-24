@@ -34,6 +34,11 @@ export default defineConfig({
             '^/weatherforecast': {
                 target: 'https://localhost:7087/',
                 secure: false
+            },
+            '^/randomCalculation': {
+                target: 'https://localhost:7087/',
+                secure: false
+
             }
         },
         port: 5173,

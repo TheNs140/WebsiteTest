@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import weatherPage from './weatherPage';
-import mainPagejsx from './mainPagejsx';
+import MainPagejsx from './MainPage';
 
 function App() {
     return (
         <div className="App">
-            <mainPagejsx />
+            <MainPagejsx />
 
         </div>
     );
