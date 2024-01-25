@@ -10,6 +10,8 @@ export default class App extends Component {
 
 
     static renderCalculations(calculation) {
+
+
         return (
             <table className='table table-striped' aria-labelledby="tabelLabel">
                 <thead>
@@ -25,22 +27,41 @@ export default class App extends Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {calculation.map(calculation =>
-                        <tr key={calculation.pipeParameters.outerDiameter}>
-                            <td>{calculation.pipeParameters.outerDiameter}</td>
-                            <td>{calculation.pipeParameters.wallThickness}</td>
-                            <td>{calculation.pipeParameters.yieldStrength}</td>
-                            <td>{calculation.metalLossParameters.depth}</td>
-                            <td>{calculation.metalLossParameters.length}</td>
-                            <td>{calculation.metalLossParameters.radialWidth}</td>
-                            <td>{calculation.fullSizedCVN}</td>
-                            <td>{calculation.pressureOfInterest}</td>
+                    {calculation.map((calculation, index) => (
+                        <tr key={index}>
+                            <td>{calculation.PipeParameters.OuterDiameter}</td>
+                            <td>{calculation.PipeParameters.WallThickness}</td>
+                            <td>{calculation.PipeParameters.YieldStrength}</td>
+                            <td>{calculation.MetalLossParameters.Depth}</td>
+                            <td>{calculation.MetalLossParameters.Length}</td>
+                            <td>{calculation.MetalLossParameters.RadialWidth}</td>
+                            <td>{calculation.FullSizedCVN}</td>
+                            <td>{calculation.PressureOfInterest}</td>
                         </tr>
-                    )}
+                    ))}
                 </tbody>
             </table>
         );
     }
+
+    async renderLeakRuptureCalculation() {
+
+        // Simple POST request with a JSON body using fetch
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(this.state.calculation)
+        };
+        fetch('/leakruptureboundrycalculation', requestOptions)
+            .then(response => response.json())
+            .then(data => this.setState({ postId: data.id }));
+
+    }
+
+    handleButtonClick = () => {
+        this.renderLeakRuptureCalculation();
+    };
+
     render() {
         let contents = this.state.loading
             ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
@@ -48,9 +69,11 @@ export default class App extends Component {
 
         return (
             <div>
-                <h1 id="tabelLabel" >Weather forecast</h1>
+                <h1 id="tabelLabel" >Leak Rupture Boundry Values</h1>
                 <p>This component demonstrates fetching data from the server.</p>
                 {contents}
+                <a className="btn btn-primary" id="submitbutton" role="button" onClick={this.handleButtonClick} >Calculate</a>
+
             </div>
         );
     }
@@ -60,6 +83,10 @@ export default class App extends Component {
     async populateRandomCalc() {
         const response = await fetch('randomCalculation');
         const data = await response.json();
-        this.setState({ calcaulation: data, loading: false });
+        this.setState({ calculation: data, loading: false });
     }
+
+
 }
+
+

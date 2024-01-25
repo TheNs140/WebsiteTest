@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NCIntegrity.Common.Entities;
 using System.IO.Pipelines;
+using System.Security.Cryptography;
 
 namespace webapi.Controllers
 {
@@ -16,17 +17,25 @@ namespace webapi.Controllers
         }
 
         [HttpGet(Name = "GetRandomCalc")]
-        public IEnumerable<RandomCalc> Get()
+        public IEnumerable<LeakRuptureBoundryAnalysisInput> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new RandomCalc
-            {
-                pipeParameters = new NCIntegrity.Common.Entities.Pipe(index, index, index),
-                metalLossParameters = new MetalLoss(index, index, index),
-                fullSizedCVN = index,
-                pressureOfInterest = index
+            var PipeParameters = new NCIntegrity.Common.Entities.Pipe(610, 7.8, 359);
+            var MetalLossParameters = new MetalLoss(0.1, 0, 1);
+            MetalLossParameters.FeatureID = "";
+            MetalLossParameters.Location = new Location(0, 0, 0);
+            var FullSizedCVN = 45;
+            var PressureOfInterest = 8260;
+            // Manually set the values for the function
+            var randomCalc1 = new LeakRuptureBoundryAnalysisInput(PipeParameters,MetalLossParameters, "", FullSizedCVN, PressureOfInterest);
 
-            })
-            .ToArray();
-        }   
+            PipeParameters = new NCIntegrity.Common.Entities.Pipe(610, 7.8, 359);
+            MetalLossParameters = new MetalLoss(500, 0, 0);
+            MetalLossParameters.Location = new Location(0, 0, 0);
+            MetalLossParameters.FeatureID = "";
+            FullSizedCVN = 45;
+            PressureOfInterest = 8260;
+            var randomCalc2 = new LeakRuptureBoundryAnalysisInput(PipeParameters, MetalLossParameters, "", FullSizedCVN, PressureOfInterest);
+            return new List<LeakRuptureBoundryAnalysisInput> { randomCalc1, randomCalc2 };
+        }
     }
 }
