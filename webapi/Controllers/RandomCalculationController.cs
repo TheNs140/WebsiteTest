@@ -16,11 +16,11 @@ namespace webapi.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetRandomCalc")]
+        [HttpGet(Name = "GetRandomCalculation")]
         public IEnumerable<LeakRuptureBoundryAnalysisInput> Get()
         {
             var PipeParameters = new NCIntegrity.Common.Entities.Pipe(610, 7.8, 359);
-            var MetalLossParameters = new MetalLoss(0.1, 0, 1);
+            var MetalLossParameters = new MetalLoss(0, .1, 1);
             MetalLossParameters.FeatureID = "";
             MetalLossParameters.Location = new Location(0, 0, 0);
             var FullSizedCVN = 45;
@@ -29,7 +29,7 @@ namespace webapi.Controllers
             var randomCalc1 = new LeakRuptureBoundryAnalysisInput(PipeParameters,MetalLossParameters, "", FullSizedCVN, PressureOfInterest);
 
             PipeParameters = new NCIntegrity.Common.Entities.Pipe(610, 7.8, 359);
-            MetalLossParameters = new MetalLoss(500, 0, 0);
+            MetalLossParameters = new MetalLoss(0, 500, 0);
             MetalLossParameters.Location = new Location(0, 0, 0);
             MetalLossParameters.FeatureID = "";
             FullSizedCVN = 45;

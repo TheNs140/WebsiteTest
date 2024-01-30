@@ -5,6 +5,7 @@ using NCIntegrity.Domain;
 using NCIntegrity.Domain.Entities;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace webapi.Controllers
@@ -14,7 +15,7 @@ namespace webapi.Controllers
     public class LeakRuptureBoundryCalculationController : ControllerBase
     {
         [HttpPost]
-        public List<LeakRuptureBoundryAnalysisOutput> Post([FromBody] List<LeakRuptureBoundryAnalysisInput> dataList )
+        public IEnumerable<LeakRuptureBoundryAnalysisOutput> Post([FromBody] List<LeakRuptureBoundryAnalysisInput> dataList )
         {
 
             List<LeakRuptureBoundryAnalysisOutput> results = new List<LeakRuptureBoundryAnalysisOutput>();
@@ -28,10 +29,17 @@ namespace webapi.Controllers
                     return results;
                 }
 
+                for(int i = 0; i < dataList.Count; i++)
+                {
+                    results.Add(LeakRuptureBoundryAnalysis.Calculate(dataList[i]));
+
+                }
+
+
                 // Process each dynamic instance in dataLis
 
                 // Return the list of calculated results
-                return results;
+                return results.ToArray();
             }
                 
         }

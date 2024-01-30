@@ -27,8 +27,8 @@ const NavBar = () => {
                         </a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="/weatherPage">
-                            Weather
+                        <a className="nav-link" href="LeakRupureBoundryEquation">
+                            ILI Analysis for Leak Rupture Boundry
                         </a>
                     </li>
                     <li className="nav-item">

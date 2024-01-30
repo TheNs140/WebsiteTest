@@ -5,7 +5,12 @@ export default class App extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { calculation: [], loading: true };
+        this.state = {
+            calculation: [],
+            dataList: [],
+            loading: true,
+            viewForm: false
+        };
     }
 
 
@@ -44,22 +49,51 @@ export default class App extends Component {
         );
     }
 
-    async renderLeakRuptureCalculation() {
-
+    async fetchTheFormula() {
         // Simple POST request with a JSON body using fetch
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(this.state.calculation)
         };
-        fetch('/leakruptureboundrycalculation', requestOptions)
-            .then(response => response.json())
-            .then(data => this.setState({ postId: data.id }));
+
+        const response = await fetch('/leakruptureboundrycalculation', requestOptions)
+        const responseList = await response.json();
+        this.state.dataList = responseList;
+
+        this.setState({ viewForm: true });
+
+    }
+
+    static RenderLeakRuptureCalculation(dataList) {
+        return (
+            <table className='table table-striped' aria-labelledby="tabelLabel">
+                <thead>
+                    <tr>
+                        <th>Remaining Strength</th>
+                        <th>Predicted Rupture Strength</th>
+                        <th>Predicted Rupture Pressure</th>
+                        <th>Predicted Failure Mode</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {dataList.map((dataList, index) => (
+                        <tr key={index}>
+                            <td>{dataList.RemainingStrength}</td>
+                            <td>{dataList.PredictedRuptureStrength}</td>
+                            <td>{dataList.PredictedRupturePressure}</td>
+                            <td>{dataList.PredictedFailureMode}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        );
 
     }
 
     handleButtonClick = () => {
-        this.renderLeakRuptureCalculation();
+        this.fetchTheFormula();
     };
 
     render() {
@@ -67,13 +101,17 @@ export default class App extends Component {
             ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
             : App.renderCalculations(this.state.calculation);
 
+        let formcontents = this.state.viewForm
+            ? App.RenderLeakRuptureCalculation(this.state.dataList)
+            : '';
+
         return (
             <div>
                 <h1 id="tabelLabel" >Leak Rupture Boundry Values</h1>
                 <p>This component demonstrates fetching data from the server.</p>
                 {contents}
                 <a className="btn btn-primary" id="submitbutton" role="button" onClick={this.handleButtonClick} >Calculate</a>
-
+                {formcontents}
             </div>
         );
     }
