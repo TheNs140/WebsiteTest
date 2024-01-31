@@ -2,7 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import RandomCalc from './RandomCalc';
 import WeatherPage from './WeatherPage';
-import ILILeakRuptureBoundryAnalysis from './ILILeakRuptureBoundryAnalysis';
+import ILILeakRuptureBoundryAnalysis from './ILILeakRuptureBoundry/ILILeakRuptureBoundryAnalysis';
+import ReactComponent from './ILILeakRuptureBoundry/Table';
 
 const mainPage = () => {
     return (
@@ -10,6 +11,7 @@ const mainPage = () => {
             <Route path='/weatherPage' element={<WeatherPage />} />
             <Route path='/randomCalc' element={<RandomCalc />} />
             <Route path='/LeakRupureBoundryEquation' element={<ILILeakRuptureBoundryAnalysis />} />
+
         </Routes>
 
     );
