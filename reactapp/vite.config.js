@@ -44,6 +44,11 @@ export default defineConfig({
                 target: 'https://localhost:7087/',
                 secure: false
 
+            },
+            '^/ilifullleakrupturecalculation': {
+                target: 'https://localhost:7087/',
+                secure: false
+
             }
         },
         port: 5173,

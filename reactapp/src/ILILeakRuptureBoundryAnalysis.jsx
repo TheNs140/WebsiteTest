@@ -1,28 +1,86 @@
-import React, { Component } from 'react';
-
+import React, { Component, useRef } from 'react';
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
+import "./ILILeakRuptureStyle.css";
 export default class ILILeakRuptureBoundryAnalysis extends Component {
 
-    render() {
-        let contents = this.state.loading
-            ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-            : App.renderCalculations(this.state.calculation);
+    static displayName = ILILeakRuptureBoundryAnalysis.name;
 
-        let formcontents = this.state.viewForm
-            ? App.RenderLeakRuptureCalculation(this.state.dataList)
-            : '';
+    constructor(props) {
+        super(props);
+        this.state = {
+            calculation: [],
+            loading: true,
+        };
+    }
+
+    async componentDidMount() {
+
+        const response = await fetch('ilifullleakrupturecalculation');
+        const data = await response.json();
+        this.setState({ calculation: data, loading: false });
+
+    }
+
+    static RenderLeakRuptureCalculation(dataList) {
+
+        const autoSizeStrategy = {
+            type: 'fitGridWidth',
+            defaultMinWidth: 100,
+            columnLimits: [
+                {
+                    colId: 'country',
+                    minWidth: 900
+                }
+            ]
+        };
+
+        // Column Definitions: Defines & controls grid columns.
+        let coldef = [
+            {
+                field: "RemainingStrength",
+                filter: true
+            },
+            {
+                field: "PredictedRuptureStrength",
+                filter: true
+            },
+            {
+                field: "PredictedRupturePressure",
+                filter: true
+            },
+            {
+                field: "PredictedFailureMode",
+                filter: true
+            }
+        ]
+
+        return (
+            // Container
+            <div className="ag-theme-quartz" style={{ height: 500 }}>
+                {/* The AG Grid component */}
+                <AgGridReact pagination={true}
+                    autoSizeStrategy={autoSizeStrategy}
+                    rowData={dataList}
+                    columnDefs={coldef} />
+            </div>
+        );
+    }
+
+    render() {
+
+        let formcontents = this.state.loading
+            ? ''
+            : ILILeakRuptureBoundryAnalysis.RenderLeakRuptureCalculation(this.state.calculation);
 
         return (
             <div>
                 <h1 id="tabelLabel" >Leak Rupture Boundry Values</h1>
                 <p>This component demonstrates fetching data from the server.</p>
-                {contents}
-                <a className="btn btn-primary" id="submitbutton" role="button" onClick={this.handleButtonClick} >Calculate</a>
                 {formcontents}
             </div>
         );
     }
 }
 
-
-
-export default ILILeakRuptureBoundryAnalysis;

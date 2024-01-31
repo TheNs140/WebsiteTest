@@ -15,7 +15,7 @@ namespace webapi.Controllers
     {
 
         [HttpGet]
-        public void Get()
+        public IEnumerable<LeakRuptureBoundryAnalysisOutput> Get()
         {
             const string connectionUri = "mongodb+srv://josmarbcristello:mz8hisZPbiISvqIx@nccluster.rtxgull.mongodb.net/?retryWrites=true&w=majority";
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
@@ -45,14 +45,18 @@ namespace webapi.Controllers
 
             for(int i =0; i < allMetalLoss.Count; i++)
             {
-                dataList.Add(new LeakRuptureBoundryAnalysisInput(new Pipe(10, allMetalLoss[i].wallThickness, 1025), new MetalLoss(allMetalLoss[i].depth, allMetalLoss[i].length, allMetalLoss[i].width), null, 30, 1200));
+                dataList.Add(new LeakRuptureBoundryAnalysisInput(new Pipe(273, allMetalLoss[i].wallThickness, 47900), new MetalLoss(allMetalLoss[i].depth, allMetalLoss[i].length, allMetalLoss[i].width), null, 30, 1200));
             }
 
             for(int i = 0; i < allMetalLoss.Count; i++ )
             {
                 results.Add(LeakRuptureBoundryAnalysis.Calculate(dataList[i]));
             }
+
+            return results.ToArray();
         }
+
+
             
     }
 }
