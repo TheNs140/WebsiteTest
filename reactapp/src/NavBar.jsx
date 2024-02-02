@@ -28,7 +28,7 @@ const NavBar = () => {
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="LeakRupureBoundryEquation">
-                            ILI Analysis for Leak Rupture Boundry
+                            ILI Analysis
                         </a>
                     </li>
                     <li className="nav-item">

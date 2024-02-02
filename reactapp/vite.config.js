@@ -49,6 +49,11 @@ export default defineConfig({
                 target: 'https://localhost:7087/',
                 secure: false
 
+            },
+            '^/ilib31gmodifiedcalculation': {
+                target: 'https://localhost:7087/',
+                secure: false
+
             }
         },
         port: 5173,

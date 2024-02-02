@@ -1,0 +1,12 @@
+h1 {
+    font-size: 10%; /* set the font size of the header to 18 pixels */
+}
+
+#tabelLabel {
+    margin-top: 1%;
+    display: flex;
+    font-size: 150% !important;
+    font-weight: 100;
+    height: 8%;
+    justify-content: center;
+}

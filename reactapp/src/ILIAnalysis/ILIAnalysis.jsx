@@ -1,23 +1,32 @@
 import React, { Component, useRef } from 'react';
 import ReactComponent from './Table';
 import App from './Charts';
-export default class ILILeakRuptureBoundryAnalysis extends Component {
+import "./ILIMainPageStyling.css";
+import "./ILIAnalysisStyling.css";
 
-    static displayName = ILILeakRuptureBoundryAnalysis.name;
+
+export default class ILIAnalysis extends Component {
+
+    static displayName = ILIAnalysis.name;
 
     constructor(props) {
         super(props);
         this.state = {
-            calculation: [],
+            leakRuptureBoundaryCalculation: [],
+            b31GCalculation: [],
             ischart: true,
         };
     }
 
     async componentDidMount() {
 
-        const response = await fetch('ilifullleakrupturecalculation');
-        const data = await response.json();
-        this.setState({ calculation: data, loading: false });
+        const response1 = await fetch('ilifullleakrupturecalculation');
+        let data = await response1.json();
+        this.setState({ leakRuptureBoundaryCalculation: data, loading: false });
+
+        const response2 = await fetch('ilib31gmodifiedcalculation');
+        data = await response2.json();
+        this.setState({ b31GCalculation: data, loading: false });
 
     }
 
@@ -29,13 +38,10 @@ export default class ILILeakRuptureBoundryAnalysis extends Component {
 
     render() {
 
-        let formcontents = this.state.ischart ? ReactComponent(this.state.calculation) : App(this.state.calculation);
-
+        let formcontents = this.state.ischart ? ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation) : App(this.state.leakRuptureBoundaryCalculation);
 
         return (
             <div>
-                <h1 id="tabelLabel" >Leak Rupture Boundry Values</h1>
-                <p>This component demonstrates fetching data from the server.</p>
                 <div>
                     <ul className="nav nav-tabs">
                         <li className="nav-item" >
