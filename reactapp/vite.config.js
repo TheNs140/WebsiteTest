@@ -32,11 +32,11 @@ export default defineConfig({
     server: {
         proxy: {
             '^/weatherforecast': {
-                target: 'https://localhost:7087/',
+                target: 'http://localhost:5077/',
                 secure: false
             },
             '^/randomCalculation': {
-                target: 'https://localhost:7087/',
+                target: 'http://localhost:5077/',
                 secure: false
 
             },
@@ -51,6 +51,11 @@ export default defineConfig({
 
             },
             '^/ilib31gmodifiedcalculation': {
+                target: 'https://localhost:7087/',
+                secure: false
+
+            },
+            '^/metalloss': {
                 target: 'https://localhost:7087/',
                 secure: false
 

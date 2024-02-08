@@ -49,6 +49,7 @@ function ReactComponent(LeakRuptureBoundryList, B31GModifiedFailurePressure) {
         },
         {
             field: "PredictedFailureMode",
+            headerName: "Predicted Failure Mode @ Pressure of Interest",
             filter: true
         }
     ]
@@ -74,6 +75,7 @@ function ReactComponent(LeakRuptureBoundryList, B31GModifiedFailurePressure) {
         },
         {
             field: "Acceptable",
+            headerName: "Acceptable @ MAOP",
             filter: true
         }
     ]
@@ -89,6 +91,7 @@ function ReactComponent(LeakRuptureBoundryList, B31GModifiedFailurePressure) {
         },        
         {
             field: "mode",
+            headerName: "Predicted Failure Mode @ B31G Failure Pressure",
             filter: true
         }
 

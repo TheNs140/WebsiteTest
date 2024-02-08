@@ -14,8 +14,8 @@ namespace webapi.Controllers
     public class ILIFullLeakRuptureCalculationController:ControllerBase
     {
 
-        [HttpGet]
-        public IEnumerable<LeakRuptureBoundryAnalysisOutput> Get()
+        [HttpPost]
+        public IEnumerable<LeakRuptureBoundryAnalysisOutput> Post([FromBody] LeakRuptureBoundaryWebsiteInput input)
         {
             const string connectionUri = "mongodb+srv://josmarbcristello:mz8hisZPbiISvqIx@nccluster.rtxgull.mongodb.net/?retryWrites=true&w=majority";
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
@@ -45,7 +45,7 @@ namespace webapi.Controllers
 
             for(int i =0; i < allMetalLoss.Count; i++)
             {
-                dataList.Add(new LeakRuptureBoundryAnalysisInput(new Pipe(273, allMetalLoss[i].wallThickness, 479), new MetalLoss(allMetalLoss[i].depth, allMetalLoss[i].length, allMetalLoss[i].width), null, 30, 12000));
+                dataList.Add(new LeakRuptureBoundryAnalysisInput(new Pipe(input.OuterDiameter, allMetalLoss[i].wallThickness, input.YieldStrength), new MetalLoss(allMetalLoss[i].depth, allMetalLoss[i].length, allMetalLoss[i].width), null, input.FullSizedCVN, input.PressureOfInterest));
             }
 
             for(int i = 0; i < allMetalLoss.Count; i++ )

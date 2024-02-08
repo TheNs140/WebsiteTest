@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 using MongoDB.Bson;
-using NCIntegrity.Common.Entities;
-using webapi.Models;
-using NCIntegrity.Domain.Entities;
+using MongoDB.Driver;
 using NCIntegrity.Common.Entities.Inputs;
-
+using NCIntegrity.Common.Entities;
+using NCIntegrity.Domain.Entities;
+using webapi.Models;
 
 namespace webapi.Controllers
 {
-
     [ApiController]
     [Route("[controller]")]
-    public class ILIB31GModifiedCalculationController : ControllerBase
+    public class MetalLossController:ControllerBase
     {
 
-        [HttpPost]
-        public IEnumerable<B31GModifiedFailurePressureOutput> Post([FromBody]B31GWebsiteInput input)
+        [HttpGet]
+        public IEnumerable<MetalLossDatabaseModel> Get()
         {
             const string connectionUri = "mongodb+srv://josmarbcristello:mz8hisZPbiISvqIx@nccluster.rtxgull.mongodb.net/?retryWrites=true&w=majority";
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
@@ -41,23 +39,7 @@ namespace webapi.Controllers
             var filter = Builders<MetalLossDatabaseModel>.Filter.Eq(r => r.featureType, "Metal Loss");
             var allMetalLoss = collectionList.Find(filter).ToList();
 
-            List<B31GInput> dataList = new List<B31GInput>();
-            List<B31GModifiedFailurePressureOutput> results = new List<B31GModifiedFailurePressureOutput>();
-
-            for (int i = 0; i < allMetalLoss.Count; i++)
-            {
-                dataList.Add(new B31GInput(new Feature(), new MetalLoss(allMetalLoss[i].depth, allMetalLoss[i].length, allMetalLoss[i].width), new Pipe(input.OuterDiameter, allMetalLoss[i].wallThickness, input.YieldStrength), input.PressureOfInterest, input.SafetyFactor));
-            }
-
-            for (int i = 0; i < allMetalLoss.Count; i++)
-            {
-                results.Add(B31GModified.CalculateFailurePressure(dataList[i]));
-            }
-
-            return results.ToArray();
+            return allMetalLoss.ToArray();
         }
-
-
-
     }
 }

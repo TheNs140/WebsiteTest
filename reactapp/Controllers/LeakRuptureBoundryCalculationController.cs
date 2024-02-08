@@ -7,9 +7,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using webapi.Models;
 
 namespace webapi.Controllers
 {
@@ -18,20 +15,30 @@ namespace webapi.Controllers
     public class LeakRuptureBoundryCalculationController : ControllerBase
     {
         [HttpPost]
-        public IEnumerable<LeakRuptureBoundryAnalysisOutput> Post([FromBody] LeakRuptureBoundaryWebsiteInput data )
+        public IEnumerable<LeakRuptureBoundryAnalysisOutput> Post([FromBody] List<LeakRuptureBoundryAnalysisInput> dataList )
         {
 
             List<LeakRuptureBoundryAnalysisOutput> results = new List<LeakRuptureBoundryAnalysisOutput>();
 
 
             {
-
-                for(int i = 5; i < 500; i++)
+                // Check if the received data is not null or empty
+                if (dataList == null || dataList.Count == 0)
                 {
-                    results.Add(LeakRuptureBoundryAnalysis.Calculate(new LeakRuptureBoundryAnalysisInput(new Pipe(data.OuterDiameter, data.WallThickness, data.YieldStrength), new MetalLoss(0, i, 0), null, data.FullSizedCVN, data.PressureOfInterest)));
+                    // Return an empty list or handle accordingly
+                    return results;
+                }
+
+                for(int i = 0; i < dataList.Count; i++)
+                {
+                    results.Add(LeakRuptureBoundryAnalysis.Calculate(dataList[i]));
 
                 }
 
+
+                // Process each dynamic instance in dataLis
+
+                // Return the list of calculated results
                 return results.ToArray();
             }
                 

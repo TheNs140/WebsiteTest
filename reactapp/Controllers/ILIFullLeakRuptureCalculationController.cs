@@ -4,7 +4,6 @@ using MongoDB.Bson;
 using NCIntegrity.Common.Entities;
 using webapi.Models;
 using NCIntegrity.Domain.Entities;
-using NCIntegrity.Common.Entities.Inputs;
 
 
 namespace webapi.Controllers
@@ -12,11 +11,11 @@ namespace webapi.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    public class ILIB31GModifiedCalculationController : ControllerBase
+    public class ILIFullLeakRuptureCalculationController:ControllerBase
     {
 
-        [HttpPost]
-        public IEnumerable<B31GModifiedFailurePressureOutput> Post([FromBody]B31GWebsiteInput input)
+        [HttpGet]
+        public IEnumerable<LeakRuptureBoundryAnalysisOutput> Get()
         {
             const string connectionUri = "mongodb+srv://josmarbcristello:mz8hisZPbiISvqIx@nccluster.rtxgull.mongodb.net/?retryWrites=true&w=majority";
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
@@ -41,23 +40,23 @@ namespace webapi.Controllers
             var filter = Builders<MetalLossDatabaseModel>.Filter.Eq(r => r.featureType, "Metal Loss");
             var allMetalLoss = collectionList.Find(filter).ToList();
 
-            List<B31GInput> dataList = new List<B31GInput>();
-            List<B31GModifiedFailurePressureOutput> results = new List<B31GModifiedFailurePressureOutput>();
+            List<LeakRuptureBoundryAnalysisInput> dataList = new List<LeakRuptureBoundryAnalysisInput>();
+            List<LeakRuptureBoundryAnalysisOutput> results = new List<LeakRuptureBoundryAnalysisOutput>();
 
-            for (int i = 0; i < allMetalLoss.Count; i++)
+            for(int i =0; i < allMetalLoss.Count; i++)
             {
-                dataList.Add(new B31GInput(new Feature(), new MetalLoss(allMetalLoss[i].depth, allMetalLoss[i].length, allMetalLoss[i].width), new Pipe(input.OuterDiameter, allMetalLoss[i].wallThickness, input.YieldStrength), input.PressureOfInterest, input.SafetyFactor));
+                dataList.Add(new LeakRuptureBoundryAnalysisInput(new Pipe(273, allMetalLoss[i].wallThickness, 479), new MetalLoss(allMetalLoss[i].depth, allMetalLoss[i].length, allMetalLoss[i].width), null, 30, 12000));
             }
 
-            for (int i = 0; i < allMetalLoss.Count; i++)
+            for(int i = 0; i < allMetalLoss.Count; i++ )
             {
-                results.Add(B31GModified.CalculateFailurePressure(dataList[i]));
+                results.Add(LeakRuptureBoundryAnalysis.Calculate(dataList[i]));
             }
 
             return results.ToArray();
         }
 
 
-
+            
     }
 }
