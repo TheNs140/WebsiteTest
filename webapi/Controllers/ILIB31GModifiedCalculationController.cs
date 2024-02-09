@@ -36,7 +36,7 @@ namespace webapi.Controllers
 
             var dbList = client.GetDatabase("ILI_Sample_Data");
 
-            var collectionList = dbList.GetCollection<MetalLossDatabaseModel>("ILI_Big_Data_Sample");
+            var collectionList = dbList.GetCollection<MetalLossDatabaseModel>("sample_onstream_20170719_2");
 
             var filter = Builders<MetalLossDatabaseModel>.Filter.Eq(r => r.featureType, "Metal Loss");
             var allMetalLoss = collectionList.Find(filter).ToList();

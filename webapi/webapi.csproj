@@ -13,6 +13,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+
+
+
   <ItemGroup>
     <Reference Include="Formula Class Library">
       <HintPath>..\..\..\NCFormulaClassLibrary\Formula Class Library\obj\Debug\net7.0\ref\Formula Class Library.dll</HintPath>

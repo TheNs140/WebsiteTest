@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-const hello = () => {
-    return (<div>"hello"</div>)
+const Hello = () => {
+    const databasename = dataBaseStore()
+    return (<div>{databasename}</div>)
 }
-export default hello;
+export default Hello;
