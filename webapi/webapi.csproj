@@ -9,29 +9,17 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
     <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
+    <PackageReference Include="NCIntegrity.Common" Version="1.0.0" />
+    <PackageReference Include="NCIntegrity.Domain" Version="1.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\reactapp\reactapp.esproj" >
+    <ProjectReference Include="..\reactapp\reactapp.esproj">
 	  <ReferenceOutputAssembly>false</ReferenceOutputAssembly>  
 		</ProjectReference>
     </ItemGroup>
 
-
-
-
-  <ItemGroup>
-    <Reference Include="Formula Class Library">
-      <HintPath>..\..\..\NCFormulaClassLibrary\Formula Class Library\obj\Debug\net7.0\ref\Formula Class Library.dll</HintPath>
-    </Reference>
-    <Reference Include="NCIntegrity.Common">
-      <HintPath>..\..\..\..\Source\Repos\NCFormulaClassLibrary\NCIntegrity.Domain\bin\Debug\net7.0\NCIntegrity.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="NCIntegrity.Domain">
-      <HintPath>..\..\..\..\Source\Repos\NCFormulaClassLibrary\NCIntegrity.Domain\bin\Debug\net7.0\NCIntegrity.Domain.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
 </Project>
