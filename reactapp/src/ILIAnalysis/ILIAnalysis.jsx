@@ -1,9 +1,9 @@
 import React, { Component, useRef } from 'react';
 import ReactComponent from './Table';
 import App from './Charts';
+import { DatabaseContext } from '.././App';
 import "./ILIMainPageStyling.css";
 import "./ILIAnalysisStyling.css";
-
 
 export default class ILIAnalysis extends Component {
 
@@ -18,7 +18,8 @@ export default class ILIAnalysis extends Component {
             PressureOfInterest: '',
             WallThickness: '',
             SafetyFactor: '',
-        
+            DataBaseName: '',
+
             leakRuptureBoundaryCalculation: [],
             b31GCalculation: [],
             genericLeakRuptureBoundaryCalculation: [],
@@ -29,13 +30,15 @@ export default class ILIAnalysis extends Component {
     }
 
     async componentDidMount() {
-
         const response = await fetch('metalloss');
         const data = await response.json();
         this.setState({ metalLoss: data });
+        this.setState({ DataBaseName: this.context.dataBaseName });
+
     }
 
     async calculateB31G() {
+
         // Simple POST request with a JSON body using fetch
         let b31GInputs = {
             OuterDiameter: this.state.OuterDiameter,
@@ -155,9 +158,21 @@ export default class ILIAnalysis extends Component {
         let formcontents = this.state.ischart ? App(this.state.genericLeakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss) : ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation);
         let formsubmission = this.state.iscalculated? '' : this.SumbitValues();
         let showformcontents = this.state.iscalculated ? formcontents : null;
+
         return (
             <div>
+
                 <div>
+
+                    <DatabaseContext.Consumer>
+                        {({ dataBaseName, setDataBaseName }) => (
+                            <>
+                                <h1>Current Database Name: {dataBaseName}</h1>
+                                <button onClick={() => setDataBaseName('newDatabaseName')}>Update Database Name</button>
+                            </>
+                        )}
+
+                    </DatabaseContext.Consumer>
                     <ul className="nav nav-tabs">
                         <li className="nav-item" >
                             <a className="nav-link" id="submitbutton" role="button" onClick={this.TableHandler} >Table</a>
@@ -172,8 +187,7 @@ export default class ILIAnalysis extends Component {
                 </div>
                 {formsubmission}
                 {showformcontents}
-
-            </div>
+                </div>
         );
     }
 }

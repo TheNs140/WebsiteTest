@@ -6,7 +6,7 @@ import ILIAnalysis from './ILIAnalysis/ILIAnalysis';
 import ReactComponent from './ILIAnalysis/Table';
 import Hello from './Hello';
 
-const mainPage = () => {
+const MainPage = () => {
     return (
         <Routes> {/* The Switch decides which component to show based on the current URL.*/}
             <Route path='/' element={<Hello />} />
@@ -19,4 +19,4 @@ const mainPage = () => {
     );
 }
 
-export default mainPage;
+export default MainPage;

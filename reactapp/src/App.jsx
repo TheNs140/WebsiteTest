@@ -1,21 +1,25 @@
-import React, { Component } from 'react';
-import MainPagejsx from './MainPage';
-import { create } from 'zustand';
+import React, { Component, useState, useContext } from 'react';
+import MainPage from './MainPage';
 
 
-const dataBaseStore = create((set) => ({
-    dataBaseName: 'here',
-    setDataBaseName: (dataBaseName) => set({ dataBaseName }),
-
-}));
-
+const DatabaseContext = React.createContext(null);
 function App() {
+
+    const [dataBaseName, setDataBaseName] = useState(null);
+
+
+    const contextValue = {
+        dataBaseName,
+        setDataBaseName
+    };
+
     return (
         <div className="App">
-            <MainPagejsx />
-
+            <DatabaseContext.Provider value={contextValue} >
+                <MainPage />
+            </DatabaseContext.Provider>
         </div>
     );
 }
-
 export default App;
+export { DatabaseContext };

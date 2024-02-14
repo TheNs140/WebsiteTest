@@ -6,7 +6,6 @@ using webapi.Models;
 using NCIntegrity.Domain.Entities;
 using NCIntegrity.Common.Entities.Inputs;
 
-
 namespace webapi.Controllers
 {
 
