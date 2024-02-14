@@ -13,8 +13,8 @@ namespace webapi.Controllers
     public class MetalLossController:ControllerBase
     {
 
-        [HttpGet]
-        public IEnumerable<MetalLossDatabaseModel> Get()
+        [HttpPost]
+        public IEnumerable<MetalLossDatabaseModel> Post([FromBody] string dataBaseName)
         {
             const string connectionUri = "mongodb+srv://josmarbcristello:mz8hisZPbiISvqIx@nccluster.rtxgull.mongodb.net/?retryWrites=true&w=majority";
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
@@ -32,7 +32,7 @@ namespace webapi.Controllers
                 Console.WriteLine(ex);
             }
 
-            var dbList = client.GetDatabase("ILI_Sample_Data");
+            var dbList = client.GetDatabase(dataBaseName);
 
             var collectionList = dbList.GetCollection<MetalLossDatabaseModel>("sample_onstream_20170719_2");
 

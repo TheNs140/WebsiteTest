@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DatabaseContext } from './App'
+import { Dropdown } from 'semantic-ui-react'
+
 
 const Hello = () => {
   const { dataBaseName, setDataBaseName } = useContext(DatabaseContext);
@@ -31,24 +33,26 @@ const Hello = () => {
     }
   };
 
-  return (
+    return (
+
+
+
       <div>
           <h1>{dataBaseName }</h1>
 
-      <h2>Available Databases:</h2>
-      <select
-        value={selectedDatabase}
-        onChange={(e) => setSelectedDatabase(e.target.value)}
-      >
-        {databases &&
-          databases.map((database, index) => (
-            <option key={index} value={database}>
-              {database}
-            </option>
-          ))}
-      </select>
-      <button onClick={updateDatabaseName}>Update Database Name</button>
-      {/* Add any other components or UI elements as needed */}
+          <Dropdown
+              placeholder='Select Country'
+              fluid
+              search
+              selection
+              options={databases.map((database, index) => ({
+                  key: index,
+                  text: database,
+                  value: database,
+              }))}
+              onChange={(e, { value }) => setDataBaseName(value)}
+              loading
+          />
     </div>
   );
 };

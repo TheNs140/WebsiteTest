@@ -8,6 +8,7 @@ import "./ILIAnalysisStyling.css";
 export default class ILIAnalysis extends Component {
 
     static displayName = ILIAnalysis.name;
+    
 
     constructor(props) {
         super(props);
@@ -30,12 +31,17 @@ export default class ILIAnalysis extends Component {
     }
 
     async componentDidMount() {
-        const response = await fetch('metalloss');
+        let requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(this.state.DataBaseName)
+        };
+
+        const response = await fetch('metalloss', requestOptions);
         const data = await response.json();
         this.setState({ metalLoss: data });
-        this.setState({ DataBaseName: this.context.dataBaseName });
-
     }
+
 
     async calculateB31G() {
 
@@ -114,6 +120,7 @@ export default class ILIAnalysis extends Component {
         this.setState({ ischart: true });
     }    
     handleSubmission = (e) => {
+
         e.preventDefault();
         this.calculateB31G();
     }
@@ -125,6 +132,8 @@ export default class ILIAnalysis extends Component {
             [name]: value
         });
     };
+
+
 
     SumbitValues() {
 
@@ -153,12 +162,11 @@ export default class ILIAnalysis extends Component {
         );
     }
 
-
     render() {
         let formcontents = this.state.ischart ? App(this.state.genericLeakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss) : ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation);
         let formsubmission = this.state.iscalculated? '' : this.SumbitValues();
         let showformcontents = this.state.iscalculated ? formcontents : null;
-
+        
         return (
             <div>
 
@@ -168,7 +176,8 @@ export default class ILIAnalysis extends Component {
                         {({ dataBaseName, setDataBaseName }) => (
                             <>
                                 <h1>Current Database Name: {dataBaseName}</h1>
-                                <button onClick={() => setDataBaseName('newDatabaseName')}>Update Database Name</button>
+                                {this.state.DataBaseName = dataBaseName}
+
                             </>
                         )}
 
