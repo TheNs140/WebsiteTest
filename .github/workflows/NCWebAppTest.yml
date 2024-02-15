@@ -28,6 +28,10 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '14'  # or any other version you prefer
+    - name: Install dependencies
+      run: |
+          cd \WebsiteTest\WebsiteTest\reactapp
+          npm install
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
     - name: Publish Artifacts
