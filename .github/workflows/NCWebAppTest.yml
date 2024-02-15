@@ -30,7 +30,7 @@ jobs:
         node-version: '14'  # or any other version you prefer
     - name: Install dependencies
       run: |
-          cd \WebsiteTest\WebsiteTest\reactapp
+          cd /home/runner/work/WebsiteTest/WebsiteTest/reactapp
           npm install
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
