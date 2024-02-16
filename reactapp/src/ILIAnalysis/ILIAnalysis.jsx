@@ -1,7 +1,7 @@
 import React, { Component, useRef } from 'react';
 import ReactComponent from './Table';
 import App from './Charts';
-import { DatabaseContext } from '.././App';
+import { DatabaseContext } from '../App';
 import "./ILIMainPageStyling.css";
 import "./ILIAnalysisStyling.css";
 
@@ -24,8 +24,9 @@ export default class ILIAnalysis extends Component {
             leakRuptureBoundaryCalculation: [],
             b31GCalculation: [],
             genericLeakRuptureBoundaryCalculation: [],
-            metalLoss: [],
-            iscalculated: false,
+            metalLoss: '',
+            inputValueList: '',
+            iscalculated: true,
             ischart: false,
         };
     }
@@ -47,10 +48,10 @@ export default class ILIAnalysis extends Component {
 
         // Simple POST request with a JSON body using fetch
         let b31GInputs = {
-            OuterDiameter: this.state.OuterDiameter,
-            YieldStrength: this.state.YieldStrength,
-            PressureOfInterest: this.state.PressureOfInterest,
-            SafetyFactor: this.state.SafetyFactor
+            OuterDiameter: this.state.inputValueList.OuterDiameter,
+            YieldStrength: this.state.inputValueList.YieldStrength,
+            PressureOfInterest: this.state.inputValueList.PressureOfInterest,
+            SafetyFactor: this.state.inputValueList.SafetyFactor
         };
 
         let requestOptions = {
@@ -65,10 +66,10 @@ export default class ILIAnalysis extends Component {
 
 
         let leakRuptureBoundaryInputs = {
-            OuterDiameter: this.state.OuterDiameter,
-            FullSizedCVN: this.state.FullSizedCVN,
-            PressureOfInterest: this.state.PressureOfInterest,
-            YieldStrength: this.state.YieldStrength
+            OuterDiameter: this.state.inputValueList.OuterDiameter,
+            FullSizedCVN: this.state.inputValueList.FullSizedCVN,
+            PressureOfInterest: this.state.inputValueList.PressureOfInterest,
+            YieldStrength: this.state.inputValueList.YieldStrength
 
         };
 
@@ -135,36 +136,9 @@ export default class ILIAnalysis extends Component {
 
 
 
-    SumbitValues() {
-
-        return (
-            <form onSubmit={this.handleSubmission}>
-                <label htmlFor="OuterDiameter">Outer Diameter</label>
-                <input type="text" id="OuterDiameter" name="OuterDiameter" value={this.state.OuterDiameter} onChange={this.handleInputChange} />
-
-                <label htmlFor="YieldStrength">Yield Strength</label>
-                <input type="text" id="YieldStrength" name="YieldStrength" value={this.state.YieldStrength} onChange={this.handleInputChange} />
-
-                <label htmlFor="FullSizedCVN">Full Sized CVN</label>
-                <input type="text" id="FullSizedCVN" name="FullSizedCVN" value={this.state.FullSizedCVN} onChange={this.handleInputChange} />
-
-                <label htmlFor="PressureOfInterest">Pressure of Interest</label>
-                <input type="text" id="PressureOfInterest" name="PressureOfInterest" value={this.PressureOfInterest} onChange={this.handleInputChange} />
-
-                <label htmlFor="WallThickness">Wall Thickness</label>
-                <input type="text" id="WallThickness" name="WallThickness" value={this.WallThickness} onChange={this.handleInputChange} />
-
-                <label htmlFor="SafetyFactor">Safety Factor</label>
-                <input type="text" id="SafetyFactor" name="SafetyFactor" value={this.SafetyFactor} onChange={this.handleInputChange} />
-
-                <button type="submit">Calculate</button>
-            </form>
-        );
-    }
 
     render() {
         let formcontents = this.state.ischart ? App(this.state.genericLeakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss) : ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation);
-        let formsubmission = this.state.iscalculated? '' : this.SumbitValues();
         let showformcontents = this.state.iscalculated ? formcontents : null;
         
         return (
@@ -173,11 +147,18 @@ export default class ILIAnalysis extends Component {
                 <div>
 
                     <DatabaseContext.Consumer>
-                        {({ dataBaseName, setDataBaseName }) => (
+                        {({ dataBaseName, inputList }) => (
                             <>
                                 <h1>Current Database Name: {dataBaseName}</h1>
                                 {this.state.DataBaseName = dataBaseName}
-
+                                {
+                                    this.state.OuterDiameter = inputList.OuterDiameter,
+                                    this.state.YieldStrength = inputList.YieldStrength,
+                                    this.state.FullSizedCVN = inputList.FullSizedCVN,
+                                    this.state.PressureOfInterest = inputList.PressureOfInterest,
+                                    this.state.WallThickness = inputList.WallThickness,
+                                    this.state.SafetyFactor = inputList.SafetyFactor
+                                }
                             </>
                         )}
 
@@ -194,7 +175,6 @@ export default class ILIAnalysis extends Component {
                         </li>
                     </ul>
                 </div>
-                {formsubmission}
                 {showformcontents}
                 </div>
         );

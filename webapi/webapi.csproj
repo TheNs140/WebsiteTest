@@ -17,9 +17,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\reactapp\reactapp.esproj">
-	  <ReferenceOutputAssembly>false</ReferenceOutputAssembly>  
-		</ProjectReference>
-    </ItemGroup>
+	  <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
 
 
 </Project>

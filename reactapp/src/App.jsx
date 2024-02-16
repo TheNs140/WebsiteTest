@@ -1,22 +1,25 @@
 import React, { Component, useState, useContext } from 'react';
-import MainPage from './MainPage';
+import Router from './Router';
 
 
 const DatabaseContext = React.createContext(null);
 function App() {
 
     const [dataBaseName, setDataBaseName] = useState(null);
+    const [inputList, setInputList] = useState([]);
 
 
     const contextValue = {
         dataBaseName,
-        setDataBaseName
+        setDataBaseName,
+        inputList,
+        setInputList
     };
 
     return (
         <div className="App">
             <DatabaseContext.Provider value={contextValue} >
-                <MainPage />
+                <Router />
             </DatabaseContext.Provider>
         </div>
     );

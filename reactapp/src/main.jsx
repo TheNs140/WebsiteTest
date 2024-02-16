@@ -4,7 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import "bootstrap/dist/css/bootstrap.min.css";
-import NavBar from "./NavBar";
+import NavBar from "./NavBar/NavBar.jsx";
 import 'semantic-ui-css/semantic.min.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
