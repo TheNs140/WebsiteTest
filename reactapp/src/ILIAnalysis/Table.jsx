@@ -62,10 +62,6 @@ function ReactComponent(LeakRuptureBoundryList, B31GModifiedFailurePressure) {
             filter: true
         },
         {
-            field: "YieldPressure",
-            filter: true
-        },
-        {
             field: "FailurePressure",
             filter: true
         },

@@ -11,7 +11,7 @@ namespace webapi.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            const string connectionUri = "mongodb+srv://josmarbcristello:mz8hisZPbiISvqIx@nccluster.rtxgull.mongodb.net/?retryWrites=true&w=majority";
+            const string connectionUri = "mongodb+srv://NCIS_website_18941:F47DzEW64qjc43PpihvHvuVFCu3qUuiJyqKkcJsDSCb@production.byyabze.mongodb.net/";
 
             var client = new MongoClient(connectionUri);
             var databases = client.ListDatabaseNames().ToList();

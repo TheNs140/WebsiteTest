@@ -6,11 +6,12 @@ import {
     LineElement,
     Tooltip,
     Legend,
+    Title,
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 
 
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Title);
 
 
 
@@ -34,6 +35,19 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         return {
             B31GValues: B31G,
             featureLength: featurelength,
+            // Add more properties as needed
+        };
+    });
+
+    let b31GModifiedListWithOdomenter = B31GModifiedFailurePressure.map((B31G, index) => {
+        let odometer = "";
+        if (metalLoss && typeof metalLoss[index].length !== 'undefined') {
+            odometer = metalLoss[index].odometer;
+        }
+        // Combine values as needed
+        return {
+            B31GValues: B31G,
+            Odometer: odometer,
             // Add more properties as needed
         };
     });
@@ -68,7 +82,7 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         ],
     }
 
-    const options = { 
+    const options = {
         scales: {
             y: {
                 beginAtZero: true,
@@ -76,7 +90,41 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         },
     }
 
+    const OdometerVSB31GFailurePressureOptions = { 
+        scales: {
+            y: {
+                beginAtZero: true,
+            },
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'ILI Run Odometer VS B31G Failure Pressure'
+            }
+        },
+    }
 
 
-    return <Scatter options={options} data={data} />;
+    const OdometerVSB31GFailurePressure = {
+        datasets: [
+            {
+                label: 'B31G Failure Pressiure',
+                data: b31GModifiedListWithOdomenter,
+                parsing: {
+                    xAxisKey: 'Odometer',
+                    yAxisKey: 'B31GValues.FailurePressure',
+                },
+                backgroundColor: 'rgba(255, 99, 132, 1)',
+                pointRadius: '0',
+                borderColor: 'red',
+            },
+        ],
+    }
+
+
+    return <div>
+        <Scatter options={options} data={data} />
+        <Scatter options={OdometerVSB31GFailurePressureOptions} data={OdometerVSB31GFailurePressure} ></Scatter>
+    </div>
+   ;
 }

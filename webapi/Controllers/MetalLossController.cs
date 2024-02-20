@@ -16,7 +16,7 @@ namespace webapi.Controllers
         [HttpPost]
         public IEnumerable<MetalLossDatabaseModel> Post([FromBody] string dataBaseName)
         {
-            const string connectionUri = "mongodb+srv://josmarbcristello:mz8hisZPbiISvqIx@nccluster.rtxgull.mongodb.net/?retryWrites=true&w=majority";
+            const string connectionUri = "mongodb+srv://NCIS_website_18941:F47DzEW64qjc43PpihvHvuVFCu3qUuiJyqKkcJsDSCb@production.byyabze.mongodb.net/";
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
             // Set the ServerApi field of the settings object to set the version of the Stable API on the client
             settings.ServerApi = new ServerApi(ServerApiVersion.V1);
@@ -34,7 +34,7 @@ namespace webapi.Controllers
 
             var dbList = client.GetDatabase(dataBaseName);
 
-            var collectionList = dbList.GetCollection<MetalLossDatabaseModel>("sample_onstream_20170719_2");
+            var collectionList = dbList.GetCollection<MetalLossDatabaseModel>("model_onstream_xlsx___20240216");
 
             var filter = Builders<MetalLossDatabaseModel>.Filter.Eq(r => r.featureType, "Metal Loss");
             var allMetalLoss = collectionList.Find(filter).ToList();

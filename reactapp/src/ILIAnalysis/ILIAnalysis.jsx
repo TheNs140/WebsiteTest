@@ -24,8 +24,7 @@ export default class ILIAnalysis extends Component {
             leakRuptureBoundaryCalculation: [],
             b31GCalculation: [],
             genericLeakRuptureBoundaryCalculation: [],
-            metalLoss: '',
-            inputValueList: '',
+            metalLoss: [],
             iscalculated: true,
             ischart: false,
         };
@@ -41,6 +40,8 @@ export default class ILIAnalysis extends Component {
         const response = await fetch('metalloss', requestOptions);
         const data = await response.json();
         this.setState({ metalLoss: data });
+        this.calculateB31G();
+
     }
 
 
@@ -48,10 +49,10 @@ export default class ILIAnalysis extends Component {
 
         // Simple POST request with a JSON body using fetch
         let b31GInputs = {
-            OuterDiameter: this.state.inputValueList.OuterDiameter,
-            YieldStrength: this.state.inputValueList.YieldStrength,
-            PressureOfInterest: this.state.inputValueList.PressureOfInterest,
-            SafetyFactor: this.state.inputValueList.SafetyFactor
+            OuterDiameter: this.state.OuterDiameter,
+            YieldStrength: this.state.YieldStrength,
+            PressureOfInterest: this.state.PressureOfInterest,
+            SafetyFactor: this.state.SafetyFactor
         };
 
         let requestOptions = {
@@ -66,10 +67,10 @@ export default class ILIAnalysis extends Component {
 
 
         let leakRuptureBoundaryInputs = {
-            OuterDiameter: this.state.inputValueList.OuterDiameter,
-            FullSizedCVN: this.state.inputValueList.FullSizedCVN,
-            PressureOfInterest: this.state.inputValueList.PressureOfInterest,
-            YieldStrength: this.state.inputValueList.YieldStrength
+            OuterDiameter: this.state.OuterDiameter,
+            FullSizedCVN: this.state.FullSizedCVN,
+            PressureOfInterest: this.state.PressureOfInterest,
+            YieldStrength: this.state.YieldStrength
 
         };
 
@@ -149,7 +150,6 @@ export default class ILIAnalysis extends Component {
                     <DatabaseContext.Consumer>
                         {({ dataBaseName, inputList }) => (
                             <>
-                                <h1>Current Database Name: {dataBaseName}</h1>
                                 {this.state.DataBaseName = dataBaseName}
                                 {
                                     this.state.OuterDiameter = inputList.OuterDiameter,
@@ -169,9 +169,6 @@ export default class ILIAnalysis extends Component {
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" onClick={this.ChartHandler}>Chart</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" onClick={this.InputHandler}>Input</a>
                         </li>
                     </ul>
                 </div>

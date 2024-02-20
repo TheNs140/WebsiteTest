@@ -24,11 +24,11 @@ const NavBar = () => {
                 <ul className="navbar-nav">
                     <li className="nav-item active">
                         <Link className="nav-link" to ="/">
-                            Home <span className="sr-only">(current)</span>
+                            Input Page <span className="sr-only">(current)</span>
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link to= 'LeakRupureBoundryEquation'  className="nav-link">
+                        <Link to= 'ILIAnalysis'  className="nav-link">
                             ILI Analysis
                         </Link>
                     </li>

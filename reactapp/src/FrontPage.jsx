@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DatabaseContext } from './App'
 import { Dropdown } from 'semantic-ui-react'
+import { useNavigate } from "react-router-dom";
+
 
 
 const FrontPage = () => {
+    const navigate = useNavigate();
     const { dataBaseName, setDataBaseName } = useContext(DatabaseContext);
-    const { metalLossList, setMetalLossList } = useContext(DatabaseContext);
     const { inputList, setInputList } = useContext(DatabaseContext);
     const [selectedDatabase, setSelectedDatabase] = useState('');
     const [databases, setDatabases] = useState([]);
@@ -42,24 +44,13 @@ const FrontPage = () => {
             console.error('Error fetching data:', error);
         }
     }
-    const fetchMetalLossList = async () => {
 
-        let requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dataBaseName)
-        };
-
-        const response = await fetch('/metalloss', requestOptions);
-        setMetalLossList(await response.json());
-    }
-
-
-    const handleSubmission =(e) => {
+    const handleSubmission = (e) => {
 
         e.preventDefault();
         setInputList(inputValues);
-        fetchMetalLossList();
+        navigate("/ILIAnalysis")
+        
     }
 
     const handleInputChange = (e) => {
@@ -73,8 +64,6 @@ const FrontPage = () => {
     return (
 
       <div>
-            <h1>{dataBaseName}</h1>
-            <h1>{inputList.OuterDiameter}</h1>
             <form onSubmit={handleSubmission}>
                 <Dropdown
                     placeholder='Select DataBase'

@@ -7,8 +7,7 @@ const Router = () => {
     return (
         <Routes> {/* The Switch decides which component to show based on the current URL.*/}
             <Route path='/' element={<FrontPage />} />
-            <Route path='/LeakRupureBoundryEquation' element={<ILIAnalysis />} />
-
+            <Route path='/ILIAnalysis' element={<ILIAnalysis />} />
         </Routes>
 
     );
