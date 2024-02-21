@@ -17,6 +17,8 @@ ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Title)
 
 export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure, metalLoss) {
 
+
+    //This is the generic Leak Rupture Boundry List used in the combined chart
     let dataList = LeakRuptureBoundryList.map((PredictedRupturePressure, index) => {
 
         // Combine values as needed
@@ -26,6 +28,8 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
             // Add more properties as needed
         };
     });
+
+    //This is the B31G failure Pressure List for the combined chart with Leak Rupture Boundry
     let b31glist = B31GModifiedFailurePressure.map((B31G, index) => {
         let featurelength = "";
         if (metalLoss && typeof metalLoss[index].length !== 'undefined') {
@@ -39,6 +43,8 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         };
     });
 
+
+    //This is the B31G Failure pressure VS Odometer list
     let b31GModifiedListWithOdomenter = B31GModifiedFailurePressure.map((B31G, index) => {
         let odometer = "";
         if (metalLoss && typeof metalLoss[index].length !== 'undefined') {
@@ -52,6 +58,8 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         };
     });
 
+
+    //This is generating the list for CorrosionDepthListWithOdometer
     let corrosionDepthListWithOdomenter = metalLoss.map((metalloss, index) => {
         let odometer = "";
         if (metalLoss  !== 'undefined') {
@@ -65,6 +73,8 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         };
     });
 
+
+    //This combines the data from the generic Leak Rupture Boudnry List and the B31G Failure Pressure list and combines it. 
     const data = {
         datasets: [
             {
