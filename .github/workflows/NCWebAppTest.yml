@@ -14,8 +14,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Check the repo
-      run: ls -R
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:

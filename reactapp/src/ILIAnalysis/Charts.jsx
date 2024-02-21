@@ -52,6 +52,19 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         };
     });
 
+    let corrosionDepthListWithOdomenter = metalLoss.map((metalloss, index) => {
+        let odometer = "";
+        if (metalLoss  !== 'undefined') {
+            odometer = metalloss.odometer;
+        }
+        // Combine values as needed
+        return {
+            CorrosionDepth: metalloss.depth,
+            Odometer: odometer,
+            // Add more properties as needed
+        };
+    });
+
     const data = {
         datasets: [
             {
@@ -108,14 +121,45 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
     const OdometerVSB31GFailurePressure = {
         datasets: [
             {
-                label: 'B31G Failure Pressiure',
+                label: 'B31G Failure Pressure',
                 data: b31GModifiedListWithOdomenter,
                 parsing: {
                     xAxisKey: 'Odometer',
                     yAxisKey: 'B31GValues.FailurePressure',
                 },
                 backgroundColor: 'rgba(255, 99, 132, 1)',
-                pointRadius: '0',
+                pointRadius: '2',
+                borderColor: 'red',
+            },
+        ],
+    }
+
+    const OdometerVSCorrosionDepthOptions = {
+        scales: {
+            y: {
+                beginAtZero: true,
+            },
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'ILI Run Odometer VS B31G Failure Pressure'
+            }
+        },
+    }
+
+
+    const OdometerVSCorrosionDepth = {
+        datasets: [
+            {
+                label: 'Odometer VS Metal Loss Depth',
+                data: corrosionDepthListWithOdomenter,
+                parsing: {
+                    xAxisKey: 'Odometer',
+                    yAxisKey: 'CorrosionDepth',
+                },
+                backgroundColor: 'rgba(255, 99, 132, 1)',
+                pointRadius: '2',
                 borderColor: 'red',
             },
         ],
@@ -125,6 +169,8 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
     return <div>
         <Scatter options={options} data={data} />
         <Scatter options={OdometerVSB31GFailurePressureOptions} data={OdometerVSB31GFailurePressure} ></Scatter>
+        <Scatter options={OdometerVSCorrosionDepthOptions} data={OdometerVSCorrosionDepth} ></Scatter>
+
     </div>
    ;
 }
