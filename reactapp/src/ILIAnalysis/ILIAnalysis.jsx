@@ -39,7 +39,7 @@ export default class ILIAnalysis extends Component {
 
         const response = await fetch('metalloss', requestOptions);
         const data = await response.json();
-        this.setState({ metalLoss: data });
+        this.state.metalLoss = data;
         this.calculateB31G();
 
     }
@@ -139,7 +139,7 @@ export default class ILIAnalysis extends Component {
 
 
     render() {
-        let formcontents = this.state.ischart ? App(this.state.genericLeakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss) : ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation);
+        let formcontents = this.state.ischart ? App(this.state.genericLeakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss) : ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, this.state.PressureOfInterest);
         let showformcontents = this.state.iscalculated ? formcontents : null;
         
         return (
