@@ -22,9 +22,9 @@ const NavBar = () => {
 
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul className="navbar-nav">
-                    <li className="nav-item active">
-                        <Link className="nav-link" to ="/">
-                            Input Page <span className="sr-only">(current)</span>
+                    <li className="nav-item">
+                        <Link to = '/' className = "nav-link">
+                            Input Page
                         </Link>
                     </li>
                     <li className="nav-item">

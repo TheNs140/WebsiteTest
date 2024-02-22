@@ -161,7 +161,7 @@ export default class ILIAnalysis extends Component {
 
 
     render() {
-        let formcontents = this.state.ischart ? App(this.state.genericLeakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, , this.state.B31GCriticalDepthCalculations) : ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, this.state.PressureOfInterest);
+        let formcontents = this.state.ischart ? App(this.state.genericLeakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, this.state.B31GCriticalDepthCalculations) : ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, this.state.PressureOfInterest);
         let showformcontents = this.state.iscalculated ? formcontents : null;
         
         return (
