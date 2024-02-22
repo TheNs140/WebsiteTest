@@ -24,6 +24,7 @@ export default class ILIAnalysis extends Component {
             leakRuptureBoundaryCalculation: [],
             b31GCalculation: [],
             genericLeakRuptureBoundaryCalculation: [],
+            B31GCriticalDepthCalculations: [],
             metalLoss: [],
             iscalculated: true,
             ischart: false,
@@ -103,6 +104,27 @@ export default class ILIAnalysis extends Component {
         const response3 = await fetch('/leakruptureboundrycalculation', requestOptions)
         const responseList3 = await response3.json();
         this.state.genericLeakRuptureBoundaryCalculation = responseList3;
+
+
+        let B31GCriticalDepthInputs = {
+            OuterDiameter: this.state.OuterDiameter,
+            FullSizedCVN: this.state.FullSizedCVN,
+            PressureOfInterest: this.state.PressureOfInterest,
+            YieldStrength: this.state.YieldStrength,
+            WallThickness: this.state.WallThickness
+
+        };
+
+        requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(B31GCriticalDepthInputs)
+        };
+
+        const response4 = await fetch('/ilib31gmodifiedcriticaldepth', requestOptions)
+        const responseList4 = await response4.json();
+        this.state.B31GCriticalDepthCalculations = responseList4;
+
 
         this.setState({ iscalculated: true });
 

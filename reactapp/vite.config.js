@@ -41,30 +41,36 @@ export default defineConfig({
 
             },
             '^/leakruptureboundrycalculation': {
-                target: 'https://localhost:7087/',
+                target: 'http://localhost:5077/',
                 secure: false
 
             },
             '^/ilifullleakrupturecalculation': {
-                target: 'https://localhost:7087/',
+                target: 'http://localhost:5077/',
                 secure: false
 
             },
             '^/ilib31gmodifiedcalculation': {
-                target: 'https://localhost:7087/',
+                target: 'http://localhost:5077/',
                 secure: false
 
             },
             '^/metalloss': {
-                target: 'https://localhost:7087/',
+                target: 'http://localhost:5077/',
                 secure: false
 
             },
             '^/database': {
-                target: 'https://localhost:7087/',
+                target: 'http://localhost:5077/',
+                secure: false
+
+            },
+            '^/ilib31gmodifiedcriticaldepth': {
+                target: 'http://localhost:5077/',
                 secure: false
 
             }
+
         },
         port: 5173,
         https: {

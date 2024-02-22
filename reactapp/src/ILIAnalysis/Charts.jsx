@@ -15,7 +15,7 @@ ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Title)
 
 
 
-export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure, metalLoss) {
+export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure, metalLoss, B31GCriticalDepthCalculations) {
 
 
     //This is the generic Leak Rupture Boundry List used in the combined chart
@@ -105,6 +105,24 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         ],
     }
 
+
+    //This is generating the list for CorrosionDepthListWithOdometer
+    let RemainingLifeCalculationVSOdometerData = metalLoss.map((metalloss, index) => {
+        let odometer = "";
+        let corrosionDepth = "";
+        if (metalLoss !== 'undefined') {
+            odometer = metalloss.odometer;
+            corrosionDepth = (B31GCriticalDepthCalculations[index].CriticalDepth - metalloss.depth) / 0.15;
+        }
+        // Combine values as needed
+        return {
+            RemainingLife: corrosionDepth,
+            Odometer: odometer,
+            // Add more properties as needed
+        };
+    });
+
+
     const options = {
         scales: {
             y: {
@@ -113,19 +131,6 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         },
     }
 
-    const OdometerVSB31GFailurePressureOptions = { 
-        scales: {
-            y: {
-                beginAtZero: true,
-            },
-        },
-        plugins: {
-            title: {
-                display: true,
-                text: 'ILI Run Odometer VS B31G Failure Pressure'
-            }
-        },
-    }
 
 
     const OdometerVSB31GFailurePressure = {
@@ -144,7 +149,7 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         ],
     }
 
-    const OdometerVSCorrosionDepthOptions = {
+    const OdometerVSB31GFailurePressureOptions = {
         scales: {
             y: {
                 beginAtZero: true,
@@ -153,10 +158,11 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         plugins: {
             title: {
                 display: true,
-                text: 'ILI Run Odometer VS B31G Failure Pressure'
+                text: 'Failure Pressure Modified B31G'
             }
         },
     }
+
 
 
     const OdometerVSCorrosionDepth = {
@@ -175,12 +181,57 @@ export default function App(LeakRuptureBoundryList, B31GModifiedFailurePressure,
         ],
     }
 
+    const OdometerVSCorrosionDepthOptions = {
+        scales: {
+            y: {
+                beginAtZero: true,
+            },
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Metal Loss Depth'
+            }
+        },
+    }
+
+
+
+    const RemainingLifeCalculationVSOdometer = {
+        datasets: [
+            {
+                label: 'Odometer VS Remaining Life',
+                data: RemainingLifeCalculationVSOdometerData,
+                parsing: {
+                    xAxisKey: 'Odometer',
+                    yAxisKey: 'RemainingLife',
+                },
+                backgroundColor: 'rgba(255, 99, 132, 1)',
+                pointRadius: '2',
+                borderColor: 'red',
+            },
+        ],
+    }
+
+    const RemainingLifeCalculationVSOdometerOptions = {
+        scales: {
+            y: {
+                beginAtZero: true,
+            },
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Remaining Life Modified B31G'
+            }
+        },
+    }
 
     return <div>
         <Scatter options={options} data={data} />
         <Scatter options={OdometerVSB31GFailurePressureOptions} data={OdometerVSB31GFailurePressure} ></Scatter>
         <Scatter options={OdometerVSCorrosionDepthOptions} data={OdometerVSCorrosionDepth} ></Scatter>
-
+        <Scatter options={RemainingLifeCalculationVSOdometerOptions} data={RemainingLifeCalculationVSOdometer} ></Scatter>
     </div>
    ;
 }
