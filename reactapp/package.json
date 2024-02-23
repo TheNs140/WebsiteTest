@@ -10,6 +10,9 @@
     "predev": "node aspnetcore-https.js"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.10",
     "@observablehq/plot": "^0.6.13",
     "@tanstack/react-table": "^8.11.7",
     "ag-grid-react": "^31.0.3",
@@ -21,6 +24,7 @@
     "jquery": "^3.7.1",
     "mongoose": "^8.1.1",
     "react": "^18.2.0",
+    "react-burger-menu": "^3.0.9",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.0",

@@ -17,11 +17,10 @@ function App() {
     };
 
     return (
-        <div className="App">
-            <DatabaseContext.Provider value={contextValue} >
-                <Router />
-            </DatabaseContext.Provider>
-        </div>
+
+        <DatabaseContext.Provider value={contextValue} >
+            <Router />
+        </DatabaseContext.Provider>
     );
 }
 export default App;

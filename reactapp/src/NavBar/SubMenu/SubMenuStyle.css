@@ -1,0 +1,6 @@
+.MuiStack-root{
+    display: flex !important;
+}
+.MuiButton-text{
+    color: white !important;
+}

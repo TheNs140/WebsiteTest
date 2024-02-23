@@ -82,7 +82,6 @@ function ReactComponent(LeakRuptureBoundryList, B31GModifiedFailurePressure, Met
         },
         {
             field: "SafetyFactor",
-            headerName: "Predicted Failure Mode @ Pressure of Interest",
             filter: true
         },
         {
