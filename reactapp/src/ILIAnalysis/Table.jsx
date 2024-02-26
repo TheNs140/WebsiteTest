@@ -4,7 +4,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import "./ILIAnalysisStyling.css";
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 
-function ReactComponent(LeakRuptureBoundryList, B31GModifiedFailurePressure, MetalLoss, PressureOfInterest) {
+function ReactComponent(LeakRuptureBoundryList, B31GModifiedFailurePressure, MetalLoss, PressureOfInterest, B31GCriticalDepth) {
     const autoSizeStrategy = {
         type: 'fitCellContents',
         defaultMinWidth: 100
@@ -21,6 +21,7 @@ function ReactComponent(LeakRuptureBoundryList, B31GModifiedFailurePressure, Met
         let wallthickness = metalLoss.wallThickness;
         let safetyfactor = B31GModifiedFailurePressure[index].FailurePressure / PressureOfInterest;
         let failurepressure = B31GModifiedFailurePressure[index].FailurePressure;
+        let remainingLife = (B31GCriticalDepth[index].CriticalDepth - metalLoss.depth) / 1.5;
         let safeoperatingpressure = B31GModifiedFailurePressure[index].SafeOperatingPressure;
         let mode = B31GModifiedFailurePressure[index].FailurePressure > LeakRuptureBoundryList.PredictedRupturePressure ? "Rupture" : "Leak";
 
@@ -37,7 +38,9 @@ function ReactComponent(LeakRuptureBoundryList, B31GModifiedFailurePressure, Met
             failurePressure: failurepressure,
             SafetyFactor: safetyfactor,
             safeOperatingPressure: safeoperatingpressure,
-            mode : mode
+            remainingLife: remainingLife,
+            mode: mode
+            
             // Add more properties as needed
         };
     });
@@ -86,6 +89,10 @@ function ReactComponent(LeakRuptureBoundryList, B31GModifiedFailurePressure, Met
         },
         {
             field: "safeOperatingPressure",
+            filter: true
+        },
+        {
+            field: "remainingLife",
             filter: true
         },
         {

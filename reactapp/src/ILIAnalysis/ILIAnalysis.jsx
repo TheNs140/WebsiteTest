@@ -41,12 +41,12 @@ export default class ILIAnalysis extends Component {
         const response = await fetch('metalloss', requestOptions);
         const data = await response.json();
         this.state.metalLoss = data;
-        this.calculateB31G();
+        this.useCalculations();
 
     }
 
 
-    async calculateB31G() {
+    async useCalculations() {
 
         // Simple POST request with a JSON body using fetch
         let b31GInputs = {
@@ -146,7 +146,7 @@ export default class ILIAnalysis extends Component {
     handleSubmission = (e) => {
 
         e.preventDefault();
-        this.calculateB31G();
+        this.useCalculations();
     }
 
     handleInputChange = (e) => {
@@ -161,7 +161,7 @@ export default class ILIAnalysis extends Component {
 
 
     render() {
-        let formcontents = this.state.ischart ? App(this.state.genericLeakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, this.state.B31GCriticalDepthCalculations) : ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, this.state.PressureOfInterest);
+        let formcontents = this.state.ischart ? App(this.state.genericLeakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, this.state.B31GCriticalDepthCalculations) : ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, this.state.PressureOfInterest, this.state.B31GCriticalDepthCalculations);
         let showformcontents = this.state.iscalculated ? formcontents : null;
         
         return (
