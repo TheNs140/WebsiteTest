@@ -1,6 +1,6 @@
 import React, { Component, useState, useContext } from 'react';
 import Router from './Router';
-import ReactComponent from './ILIAnalysis/Table';
+import TableComponent from './ILIAnalysis/Table';
 
 
 const DatabaseContext = React.createContext(null);
@@ -8,13 +8,16 @@ function App() {
 
     const [dataBaseName, setDataBaseName] = useState(null);
     const [inputList, setInputList] = useState([]);
-
-
+    const [metalLossList, setMetalLossList] = useState([]);
     const contextValue = {
         dataBaseName,
         setDataBaseName,
         inputList,
-        setInputList
+        setInputList,
+        metalLossList,
+        setMetalLossList
+
+
     };
 
     return (

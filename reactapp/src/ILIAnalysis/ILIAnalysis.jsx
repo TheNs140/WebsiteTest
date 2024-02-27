@@ -1,5 +1,5 @@
 import React, { Component, useRef } from 'react';
-import ReactComponent from './Table';
+import TableComponent from './Table';
 import App from './Charts';
 import { DatabaseContext } from '../App';
 import "./ILIMainPageStyling.css";
@@ -26,7 +26,7 @@ export default class ILIAnalysis extends Component {
             genericLeakRuptureBoundaryCalculation: [],
             B31GCriticalDepthCalculations: [],
             metalLoss: [],
-            iscalculated: true,
+            iscalculated: false,
             ischart: false,
         };
     }
@@ -59,7 +59,10 @@ export default class ILIAnalysis extends Component {
         let requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(b31GInputs)
+            body: JSON.stringify({
+                data: this.state.metalLoss,
+                inputs: b31GInputs
+            })
         };
 
         const response1 = await fetch('/ilib31gmodifiedcalculation', requestOptions)
@@ -124,10 +127,18 @@ export default class ILIAnalysis extends Component {
         const response4 = await fetch('/ilib31gmodifiedcriticaldepth', requestOptions)
         const responseList4 = await response4.json();
         this.state.B31GCriticalDepthCalculations = responseList4;
+ 
 
 
         this.setState({ iscalculated: true });
 
+    }
+
+    TableViewer = () => {
+        return (
+            <TableComponent leakRuptureBoundaryCalculation={this.state.leakRuptureBoundaryCalculation} b31GCalculation={this.state.b31GCalculation} metalLoss={this.state.metalLoss} PressureOfInterest={this.state.PressureOfInterest} B31GCriticalDepthCalculations={this.state.B31GCriticalDepthCalculations} />
+
+        )
     }
 
     InputHandler = () => {
@@ -161,8 +172,6 @@ export default class ILIAnalysis extends Component {
 
 
     render() {
-        let formcontents = this.state.ischart ? App(this.state.genericLeakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, this.state.B31GCriticalDepthCalculations) : ReactComponent(this.state.leakRuptureBoundaryCalculation, this.state.b31GCalculation, this.state.metalLoss, this.state.PressureOfInterest, this.state.B31GCriticalDepthCalculations);
-        let showformcontents = this.state.iscalculated ? formcontents : null;
         
         return (
             <div>
@@ -170,7 +179,7 @@ export default class ILIAnalysis extends Component {
                 <div>
 
                     <DatabaseContext.Consumer>
-                        {({ dataBaseName, inputList }) => (
+                        {({ dataBaseName, inputList, metalLossList }) => (
                             <>
                                 {this.state.DataBaseName = dataBaseName}
                                 {
@@ -181,9 +190,9 @@ export default class ILIAnalysis extends Component {
                                     this.state.WallThickness = inputList.WallThickness,
                                     this.state.SafetyFactor = inputList.SafetyFactor
                                 }
+                                
                             </>
                         )}
-
                     </DatabaseContext.Consumer>
                     <ul className="nav nav-tabs">
                         <li className="nav-item" >
@@ -194,7 +203,7 @@ export default class ILIAnalysis extends Component {
                         </li>
                     </ul>
                 </div>
-                {showformcontents}
+                {this.state.iscalculated ? this.TableViewer():''}
                 </div>
         );
     }

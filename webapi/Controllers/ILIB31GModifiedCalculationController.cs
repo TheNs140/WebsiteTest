@@ -14,9 +14,18 @@ namespace webapi.Controllers
     public class ILIB31GModifiedCalculationController : ControllerBase
     {
 
-        [HttpPost]
-        public IEnumerable<B31GModifiedFailurePressureOutput> Post([FromBody]B31GWebsiteInput input)
+        public class B31GParameterBinding
         {
+            public B31GWebsiteInput inputs { get; set; }
+            public MetalLossParameterPassing[] data {get; set; }
+        }
+
+        [HttpPost]
+        public IEnumerable<B31GModifiedFailurePressureOutput> Post([FromBody] B31GParameterBinding parameters)
+        {
+            B31GWebsiteInput input = parameters.inputs;
+            MetalLossParameterPassing[] metalLoss = parameters.data;
+            
             const string connectionUri = "mongodb+srv://NCIS_website_18941:F47DzEW64qjc43PpihvHvuVFCu3qUuiJyqKkcJsDSCb@production.byyabze.mongodb.net/";
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
             // Set the ServerApi field of the settings object to set the version of the Stable API on the client
