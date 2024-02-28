@@ -201,8 +201,8 @@ class TableComponent extends React.Component {
     ]
 
     render() {
-        return(
-            <div className="ag-theme-quartz" style={{ height: 750 }}>
+        return (
+            <div className="ag-theme-quartz" style={{ justifyContent: 'center', height:850 }}>
                <DatabaseContext.Consumer>
                     {({ inputList }) => {
                             this.state.OuterDiameter = inputList.OuterDiameter,

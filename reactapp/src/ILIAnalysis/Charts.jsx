@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
     Chart as ChartJS,
     LinearScale,
@@ -9,14 +9,152 @@ import {
     Title,
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
-import { extend } from 'jquery';
+import { extend, map } from 'jquery';
 import { DatabaseContext } from '../App';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Title);
 
 
-function App(LeakRuptureBoundryList, B31GModifiedFailurePressure, metalLoss, B31GCriticalDepthCalculations) {
+class MainChartApplication extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            viewState: [],
+            ViewRupturePressureLineWithB31GFailurePressure: false,
+            OuterDiameter: '',
+            YieldStrength: '',
+            FullSizedCVN: '',
+            PressureOfInterest: '',
+            WallThickness: '',
+            SafetyFactor: '',
+            LeakRuptureBoundryList: [],
+            B31GModifiedFailurePressure: [],
+            GenericLeakRuptureBoundaryCalculation:[], 
+            MetalLoss: JSON.parse(sessionStorage.metalLoss),
+            PressureOfInterest: [],
+            B31GCriticalDepth: [],
+            FullyMappedVariables: []
+        };
+    }
+
+
+    async componentDidMount() {
+        await this.calculateFromMetalLossList();
+
+
+    }
+
+    handleToggleChange = (e, value) => {
+        this.setState({
+            viewState: value
+        })
+
+        this.state.viewState.map((totogglechange) =>
+        {
+            this.setState({ [totogglechange]: !totogglechange })
+        }
+        )
+
+    }
+
+    async calculateFromMetalLossList() {
+        let b31GInputs = {
+            OuterDiameter: this.state.OuterDiameter,
+            YieldStrength: this.state.YieldStrength,
+            PressureOfInterest: this.state.PressureOfInterest,
+            SafetyFactor: this.state.SafetyFactor
+        };
+
+        let requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                data: this.state.MetalLoss,
+                inputs: b31GInputs
+            })
+        };
+
+        const response1 = await fetch('/ilib31gmodifiedcalculation', requestOptions)
+        const responseList = await response1.json();
+
+
+        let leakRuptureBoundaryInputs = {
+            OuterDiameter: this.state.OuterDiameter,
+            FullSizedCVN: this.state.FullSizedCVN,
+            PressureOfInterest: this.state.PressureOfInterest,
+            YieldStrength: this.state.YieldStrength
+
+        };
+
+        requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                data: this.state.MetalLoss,
+                inputs: leakRuptureBoundaryInputs
+            })
+        };
+
+        const response2 = await fetch('/ilifullleakrupturecalculation', requestOptions)
+        const responseList2 = await response2.json();
+
+
+        let genericleakRuptureBoundaryInputs = {
+            OuterDiameter: this.state.OuterDiameter,
+            FullSizedCVN: this.state.FullSizedCVN,
+            PressureOfInterest: this.state.PressureOfInterest,
+            YieldStrength: this.state.YieldStrength,
+            WallThickness: this.state.WallThickness
+
+        };
+
+        requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(genericleakRuptureBoundaryInputs)
+        };
+
+        const response3 = await fetch('/leakruptureboundrycalculation', requestOptions)
+        const responseList3 = await response3.json();
+
+
+
+        let B31GCriticalDepthInputs = {
+            OuterDiameter: this.state.OuterDiameter,
+            FullSizedCVN: this.state.FullSizedCVN,
+            PressureOfInterest: this.state.PressureOfInterest,
+            YieldStrength: this.state.YieldStrength,
+            WallThickness: this.state.WallThickness
+
+        };
+
+        requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                data: this.state.MetalLoss,
+                inputs: B31GCriticalDepthInputs
+            })
+        };
+
+        const response4 = await fetch('/ilib31gmodifiedcriticaldepth', requestOptions)
+        const responseList4 = await response4.json();
+
+
+        this.setState({
+            B31GCriticalDepth: responseList4,
+            LeakRuptureBoundryList: responseList2,
+            B31GModifiedFailurePressure: responseList,
+            GenericLeakRuptureBoundaryCalculation: responseList3
+        })
+    }
+
+    App(LeakRuptureBoundryList, B31GModifiedFailurePressure, metalLoss, B31GCriticalDepthCalculations) {
+
 
 
     //This is the generic Leak Rupture Boundry List used in the combined chart
@@ -124,7 +262,7 @@ function App(LeakRuptureBoundryList, B31GModifiedFailurePressure, metalLoss, B31
     });
 
 
-    const options = {
+        const options = {
         scales: {
             y: {
                 beginAtZero: true,
@@ -226,115 +364,40 @@ function App(LeakRuptureBoundryList, B31GModifiedFailurePressure, metalLoss, B31
                 text: 'Remaining Life Modified B31G'
             }
         },
-    }
+        }
 
-    return <div>
-        <Scatter options={options} data={data} />
-        <Scatter options={OdometerVSB31GFailurePressureOptions} data={OdometerVSB31GFailurePressure} ></Scatter>
-        <Scatter options={OdometerVSCorrosionDepthOptions} data={OdometerVSCorrosionDepth} ></Scatter>
-        <Scatter options={RemainingLifeCalculationVSOdometerOptions} data={RemainingLifeCalculationVSOdometer} ></Scatter>
+
+        return <div>
+            <ToggleButtonGroup value={this.state.viewState} onChange={this.handleToggleChange}>
+                <ToggleButton value="ViewRupturePressureLineWithB31GFailurePressure">
+                    Rupture Pressure Line with B31G Failure Pressure
+                </ToggleButton>
+                <ToggleButton value="ViewB31GFailurePressure">
+                    B31G Failure Pressure
+                </ToggleButton>
+                <ToggleButton value="ViewMetalLossDepth">
+                    Metal Loss Depth
+                </ToggleButton>
+                <ToggleButton value="ViewRemainingLife">
+                    Remaining Life
+                </ToggleButton>
+            </ToggleButtonGroup>
+            <div className={"chart-container"} style={{ display: "inline-flex", flexDirection: "column", gap:'12vh', width: "80%" }}> 
+            {this.state.viewState.includes('ViewRupturePressureLineWithB31GFailurePressure') && (
+                <Scatter options={options} data={data} />
+            )}
+            {this.state.viewState.includes('ViewB31GFailurePressure') && (
+                <Scatter options={OdometerVSB31GFailurePressureOptions} data={OdometerVSB31GFailurePressure} />
+            )}
+            {this.state.viewState.includes('ViewMetalLossDepth') && (
+                <Scatter options={OdometerVSCorrosionDepthOptions} data={OdometerVSCorrosionDepth} />
+            )}
+            {this.state.viewState.includes('ViewRemainingLife') && (
+                <Scatter options={RemainingLifeCalculationVSOdometerOptions} data={RemainingLifeCalculationVSOdometer} />
+                )}
+            </div>
     </div>
-        ;
 }
-
-class MainChartApplication extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            isCalculated : false,
-            OuterDiameter: '',
-            YieldStrength: '',
-            FullSizedCVN: '',
-            PressureOfInterest: '',
-            WallThickness: '',
-            SafetyFactor: '',
-            LeakRuptureBoundryList: [],
-            B31GModifiedFailurePressure: [],
-            MetalLoss: JSON.parse(sessionStorage.metalLoss),
-            PressureOfInterest: [],
-            B31GCriticalDepth: [],
-            FullyMappedVariables: []
-        };
-    }
-
-
-    async componentDidMount() {
-        await this.calculateFromMetalLossList();
-
-
-    }
-
-    async calculateFromMetalLossList() {
-        let b31GInputs = {
-            OuterDiameter: this.state.OuterDiameter,
-            YieldStrength: this.state.YieldStrength,
-            PressureOfInterest: this.state.PressureOfInterest,
-            SafetyFactor: this.state.SafetyFactor
-        };
-
-        let requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                data: this.state.MetalLoss,
-                inputs: b31GInputs
-            })
-        };
-
-        const response1 = await fetch('/ilib31gmodifiedcalculation', requestOptions)
-        const responseList = await response1.json();
-
-
-        let leakRuptureBoundaryInputs = {
-            OuterDiameter: this.state.OuterDiameter,
-            FullSizedCVN: this.state.FullSizedCVN,
-            PressureOfInterest: this.state.PressureOfInterest,
-            YieldStrength: this.state.YieldStrength
-
-        };
-
-        requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                data: this.state.MetalLoss,
-                inputs: leakRuptureBoundaryInputs
-            })
-        };
-
-        const response2 = await fetch('/ilifullleakrupturecalculation', requestOptions)
-        const responseList2 = await response2.json();
-
-        let B31GCriticalDepthInputs = {
-            OuterDiameter: this.state.OuterDiameter,
-            FullSizedCVN: this.state.FullSizedCVN,
-            PressureOfInterest: this.state.PressureOfInterest,
-            YieldStrength: this.state.YieldStrength,
-            WallThickness: this.state.WallThickness
-
-        };
-
-        requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                data: this.state.MetalLoss,
-                inputs: B31GCriticalDepthInputs
-            })
-        };
-
-        const response4 = await fetch('/ilib31gmodifiedcriticaldepth', requestOptions)
-        const responseList4 = await response4.json();
-
-
-        this.setState({
-            B31GCriticalDepth: responseList4,
-            LeakRuptureBoundryList: responseList2,
-            B31GModifiedFailurePressure: responseList
-        })
-    }
-
 
 
     render() {
@@ -353,7 +416,7 @@ class MainChartApplication extends React.Component {
 
                     }}
                 </DatabaseContext.Consumer>
-                {this.state.isCalculated ? App(this.state.LeakRuptureBoundryList, this.state.B31GModifiedFailurePressure, this.state.MetalLoss, this.state.B31GCriticalDepth) : ''}
+                {this.state.isCalculated ? this.App(this.state.GenericLeakRuptureBoundaryCalculation, this.state.B31GModifiedFailurePressure, this.state.MetalLoss, this.state.B31GCriticalDepth) : ''}
             </div>
         )
     }
