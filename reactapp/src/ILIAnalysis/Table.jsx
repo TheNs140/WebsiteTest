@@ -42,7 +42,7 @@ class TableComponent extends React.Component {
             SafetyFactor: this.state.SafetyFactor
         };
 
-        let requestOptions = {
+        let requestOptionsB31GFailurePressure = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -50,10 +50,6 @@ class TableComponent extends React.Component {
                 inputs: b31GInputs
             })
         };
-
-        const response1 = await fetch('/ilib31gmodifiedcalculation', requestOptions)
-        const responseList = await response1.json();
-        this.state.B31GModifiedFailurePressure = responseList;
 
 
         let leakRuptureBoundaryInputs = {
@@ -64,7 +60,7 @@ class TableComponent extends React.Component {
 
         };
 
-        requestOptions = {
+        let requestOptionsLeakRupture = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -73,9 +69,6 @@ class TableComponent extends React.Component {
             })
         };
 
-        const response2 = await fetch('/ilifullleakrupturecalculation', requestOptions)
-        const responseList2 = await response2.json();
-        this.state.LeakRuptureBoundryList = responseList2;
 
         let B31GCriticalDepthInputs = {
             OuterDiameter: this.state.OuterDiameter,
@@ -86,7 +79,7 @@ class TableComponent extends React.Component {
 
         };
 
-        requestOptions = {
+        let requestOptionsB31GCriticalDepth = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -95,8 +88,20 @@ class TableComponent extends React.Component {
             })
         };
 
-        const response4 = await fetch('/ilib31gmodifiedcriticaldepth', requestOptions)
-        const responseList4 = await response4.json();
+
+        const [response1, response2, response4] = await Promise.all([
+            fetch('/ilib31gmodifiedcalculation', requestOptionsB31GFailurePressure),
+            fetch('/ilifullleakrupturecalculation', requestOptionsLeakRupture),
+            fetch('/ilib31gmodifiedcriticaldepth', requestOptionsB31GCriticalDepth)
+        ]);
+
+        const [responseList, responseList2, responseList4] = await Promise.all([
+            response1.json(),
+            response2.json(),
+            response4.json(),
+        ]);
+        this.state.B31GModifiedFailurePressure = responseList;
+        this.state.LeakRuptureBoundryList = responseList2;
         this.state.B31GCriticalDepth = responseList4;
 
     }
