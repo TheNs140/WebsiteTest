@@ -6,6 +6,7 @@ import { SubMenu } from './SubMenu/SubMenu.jsx';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
+
 const Sidebar = () => {
 
     return(
@@ -16,13 +17,6 @@ const Sidebar = () => {
                         Input Page
                     </Link>
                 </Button>
-
-                <Button variant="text">
-                    <Link to='ILIAnalysis' className="nav-link">
-                        ILI Analysis
-                    </Link>
-                </Button>
-
                 <SubMenu />
             </Stack>
 

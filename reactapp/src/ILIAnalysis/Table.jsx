@@ -10,16 +10,96 @@ class TableComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            LeakRuptureBoundryList: JSON.parse(sessionStorage.leakRuptureBoundaryCalculation),
-            B31GModifiedFailurePressure: JSON.parse(sessionStorage.b31GCalculation),
+            OuterDiameter: '',
+            YieldStrength: '',
+            FullSizedCVN: '',
+            PressureOfInterest: '',
+            WallThickness: '',
+            SafetyFactor: '',
+            LeakRuptureBoundryList: [],
+            B31GModifiedFailurePressure: [],
             MetalLoss: JSON.parse(sessionStorage.metalLoss),
-            PressureOfInterest: JSON.parse(sessionStorage.PressureOfInterest),
-            B31GCriticalDepth: JSON.parse(sessionStorage.B31GCriticalDepthCalculations),
+            PressureOfInterest: [],
+            B31GCriticalDepth: [],
             FullyMappedVariables: []
         };
 
     }
 
+
+    async componentDidMount() {
+        await this.calculateFromMetalLossList();
+        this.mapFunctions();
+
+
+    }
+
+    async calculateFromMetalLossList() {
+        let b31GInputs = {
+            OuterDiameter: this.state.OuterDiameter,
+            YieldStrength: this.state.YieldStrength,
+            PressureOfInterest: this.state.PressureOfInterest,
+            SafetyFactor: this.state.SafetyFactor
+        };
+
+        let requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                data: this.state.MetalLoss,
+                inputs: b31GInputs
+            })
+        };
+
+        const response1 = await fetch('/ilib31gmodifiedcalculation', requestOptions)
+        const responseList = await response1.json();
+        this.state.B31GModifiedFailurePressure = responseList;
+
+
+        let leakRuptureBoundaryInputs = {
+            OuterDiameter: this.state.OuterDiameter,
+            FullSizedCVN: this.state.FullSizedCVN,
+            PressureOfInterest: this.state.PressureOfInterest,
+            YieldStrength: this.state.YieldStrength
+
+        };
+
+        requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                data: this.state.MetalLoss,
+                inputs: leakRuptureBoundaryInputs
+            })
+        };
+
+        const response2 = await fetch('/ilifullleakrupturecalculation', requestOptions)
+        const responseList2 = await response2.json();
+        this.state.LeakRuptureBoundryList = responseList2;
+
+        let B31GCriticalDepthInputs = {
+            OuterDiameter: this.state.OuterDiameter,
+            FullSizedCVN: this.state.FullSizedCVN,
+            PressureOfInterest: this.state.PressureOfInterest,
+            YieldStrength: this.state.YieldStrength,
+            WallThickness: this.state.WallThickness
+
+        };
+
+        requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                data: this.state.MetalLoss,
+                inputs: B31GCriticalDepthInputs
+            })
+        };
+
+        const response4 = await fetch('/ilib31gmodifiedcriticaldepth', requestOptions)
+        const responseList4 = await response4.json();
+        this.state.B31GCriticalDepth = responseList4;
+
+    }
         
 
     autoSizeStrategy = {
@@ -62,7 +142,7 @@ class TableComponent extends React.Component {
                 // Add more properties as needed
             };
         });
-        this.state.FullyMappedVariables = FullChartValues;
+        this.setState({ FullyMappedVariables: FullChartValues })
 
     }
 
@@ -121,13 +201,21 @@ class TableComponent extends React.Component {
     ]
 
     render() {
-        let tempMetalLoss = '';
-        this.mapFunctions();
         return(
             <div className="ag-theme-quartz" style={{ height: 750 }}>
-
+               <DatabaseContext.Consumer>
+                    {({ inputList }) => {
+                            this.state.OuterDiameter = inputList.OuterDiameter,
+                            this.state.YieldStrength = inputList.YieldStrength,
+                            this.state.FullSizedCVN = inputList.FullSizedCVN,
+                            this.state.PressureOfInterest = inputList.PressureOfInterest,
+                            this.state.WallThickness = inputList.WallThickness,
+                            this.state.SafetyFactor = inputList.SafetyFactor
+                                                
+                    }}
+                    
+                </DatabaseContext.Consumer>
             {/* The AG Grid component */}
-            <h1 id="tabelLabel" >Combined Value Tables</h1>
             <AgGridReact pagination={true}
                 autoSizeStrategy={this.autoSizeStrategy}
                 rowData={this.state.FullyMappedVariables}

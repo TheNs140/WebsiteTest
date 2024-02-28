@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import "./SubMenuStyle.css"
+import { Link } from 'react-router-dom'
 
 
 export function SubMenu() {
@@ -25,7 +26,7 @@ export function SubMenu() {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
-                Dashboard
+                ILI Analysis
             </Button>
             <Menu
                 id="basic-menu"
@@ -36,8 +37,14 @@ export function SubMenu() {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+            <Link to='/Table' className="nav-link">
+                <MenuItem onClick={handleClose}>
+                    Table
+                </MenuItem>
+             </Link>
+            <Link to='/Chart' className="nav-link">
+                <MenuItem onClick={handleClose}>Charts</MenuItem>
+            </Link>
                 <MenuItem onClick={handleClose}>Logout</MenuItem>
             </Menu>
         </div>

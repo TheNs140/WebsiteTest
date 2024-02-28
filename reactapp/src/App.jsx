@@ -7,6 +7,7 @@ const DatabaseContext = React.createContext(null);
 function App() {
 
     const [dataBaseName, setDataBaseName] = useState(null);
+    const [isCalculated, setIsCalculated] = useState(false);
     const [inputList, setInputList] = useState([]);
     const [metalLossList, setMetalLossList] = useState([]);
     const contextValue = {
@@ -15,8 +16,9 @@ function App() {
         inputList,
         setInputList,
         metalLossList,
-        setMetalLossList
-
+        setMetalLossList,
+        isCalculated,
+        setIsCalculated
 
     };
 

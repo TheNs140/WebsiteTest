@@ -11,44 +11,33 @@ namespace webapi.Controllers
 
     [ApiController]
     [Route("[controller]")]
+
+
     public class ILIB31GModifiedCriticalDepthController : ControllerBase
     {
 
-        [HttpPost]
-        public IEnumerable<B31GCriticalDepthOutput> Post([FromBody] B31GWebsiteInput input)
+        public class B31GCriticalDepthParameters
         {
-            const string connectionUri = "mongodb+srv://NCIS_website_18941:F47DzEW64qjc43PpihvHvuVFCu3qUuiJyqKkcJsDSCb@production.byyabze.mongodb.net/";
-            var settings = MongoClientSettings.FromConnectionString(connectionUri);
-            // Set the ServerApi field of the settings object to set the version of the Stable API on the client
-            settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-            var client = new MongoClient(settings);
-            // Send a ping to confirm a successful connection
-            try
-            {
-                var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-                Console.WriteLine("Pinged your deployment. You successfully connected to MongoDB!");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            public B31GWebsiteInput inputs { get; set; }
+            public MetalLossParameterPassing[] data { get; set; }
+        }
 
-            var dbList = client.GetDatabase("Northern_Crescent___Virtual_Pipeline");
+        [HttpPost]
+        public IEnumerable<B31GCriticalDepthOutput> Post([FromBody] B31GCriticalDepthParameters parameters)
+        {
 
-            var collectionList = dbList.GetCollection<MetalLossDatabaseModel>("model_onstream_xlsx___20240216");
-
-            var filter = Builders<MetalLossDatabaseModel>.Filter.Eq(r => r.featureType, "Metal Loss");
-            var allMetalLoss = collectionList.Find(filter).ToList();
+            B31GWebsiteInput input = parameters.inputs;
+            MetalLossParameterPassing[] allMetalLoss = parameters.data;
 
             List<B31GInput> dataList = new List<B31GInput>();
             List<B31GCriticalDepthOutput> results = new List<B31GCriticalDepthOutput>();
 
-            for (int i = 0; i < allMetalLoss.Count; i++)
+            for (int i = 0; i < allMetalLoss.Count(); i++)
             {
                 dataList.Add(new B31GInput(new Feature(), new MetalLoss(allMetalLoss[i].depth, allMetalLoss[i].length, allMetalLoss[i].width), new Pipe(input.OuterDiameter, allMetalLoss[i].wallThickness, input.YieldStrength), null, input.PressureOfInterest, input.SafetyFactor));
             }
 
-            for (int i = 0; i < allMetalLoss.Count; i++)
+            for (int i = 0; i < allMetalLoss.Count(); i++)
             {
                 results.Add(B31GModified.CalculateCriticalDepth(dataList[i]));
             }

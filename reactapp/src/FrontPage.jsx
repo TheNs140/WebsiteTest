@@ -9,6 +9,8 @@ const FrontPage = () => {
     const navigate = useNavigate();
     const { dataBaseName, setDataBaseName } = useContext(DatabaseContext);
     const { inputList, setInputList } = useContext(DatabaseContext);
+    const { isCalculated, setIsCalculated } = useContext(DatabaseContext);
+
     const [selectedDatabase, setSelectedDatabase] = useState('');
     const [databases, setDatabases] = useState([]);
 
@@ -47,10 +49,33 @@ const FrontPage = () => {
 
     const handleSubmission = (e) => {
 
+
         e.preventDefault();
         setInputList(inputValues);
-        navigate("/ILIAnalysis")
-        
+
+        getMetalLossFeatures();
+
+    }
+
+    async function getMetalLossFeatures()
+    {
+
+        let requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dataBaseName)
+        };
+
+        const response = await fetch('metalloss', requestOptions);
+        const data = await response.json();
+        let metalLoss = data;
+
+        sessionStorage.setItem('metalLoss', JSON.stringify(metalLoss))
+        setIsCalculated(true);
+
+
+        navigate("/Table")
+
     }
 
     const handleInputChange = (e) => {

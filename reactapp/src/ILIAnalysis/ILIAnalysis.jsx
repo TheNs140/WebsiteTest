@@ -41,6 +41,8 @@ export default class ILIAnalysis extends Component {
         const response = await fetch('metalloss', requestOptions);
         const data = await response.json();
         this.state.metalLoss = data;
+
+        sessionStorage.setItem('metalLoss', JSON.stringify(this.state.metalLoss))
         this.useCalculations();
 
     }
@@ -81,7 +83,10 @@ export default class ILIAnalysis extends Component {
         requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(leakRuptureBoundaryInputs)
+            body: JSON.stringify({
+                data: this.state.metalLoss,
+                inputs: leakRuptureBoundaryInputs
+            })
         };
 
         const response2 = await fetch('/ilifullleakrupturecalculation', requestOptions)
@@ -121,13 +126,17 @@ export default class ILIAnalysis extends Component {
         requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(B31GCriticalDepthInputs)
+            body: JSON.stringify({
+                data: this.state.metalLoss,
+                inputs: B31GCriticalDepthInputs
+            })
         };
 
         const response4 = await fetch('/ilib31gmodifiedcriticaldepth', requestOptions)
         const responseList4 = await response4.json();
         this.state.B31GCriticalDepthCalculations = responseList4;
  
+
 
 
         this.setState({ iscalculated: true });
