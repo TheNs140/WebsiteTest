@@ -19,6 +19,11 @@ const Sidebar = () => {
                 </Link>
 
                 <SubMenu />
+                <Link to='/DigList' className="nav-link">
+                    <Button variant="text">
+                        Dig List
+                    </Button>
+                </Link>
             </Stack>
 
         </Menu>

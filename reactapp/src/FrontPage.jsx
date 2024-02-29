@@ -8,11 +8,19 @@ import { useNavigate } from "react-router-dom";
 const FrontPage = () => {
     const navigate = useNavigate();
     const { dataBaseName, setDataBaseName } = useContext(DatabaseContext);
+    
     const { inputList, setInputList } = useContext(DatabaseContext);
     const { isCalculated, setIsCalculated } = useContext(DatabaseContext);
 
     const [selectedDatabase, setSelectedDatabase] = useState('');
     const [databases, setDatabases] = useState([]);
+
+
+    const [ collectionName, setCollectionName ] = useState('');
+    const [collections, setCollections] = useState([]);
+    const [selectedCollection, setSelectedCollection] = useState([]);
+
+
 
     const [inputValues, setInputValues] = useState({
         OuterDiameter: '',
@@ -28,9 +36,16 @@ const FrontPage = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if (selectedDatabase !== '') {
+            fetchCollections();
+        }
+    }, []);
+
 
     const fetchData = async () => {
         try {
+
             const response = await fetch('/database');
             const data = await response.json();
 
@@ -38,14 +53,40 @@ const FrontPage = () => {
 
 
             setDatabases(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+
+
+    }
+
+    const fetchCollections = async () => {
+
+        try {
+
+            let options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(selectedDatabase)
+            };
+
+
+            const response = await fetch('/collection', options);
+            const data = await response.json();
+
+
+
+
+            setCollections(data);
             // Set the default selected database (optional)
             if (data.length > 0) {
-                setSelectedDatabase(data[0]);
+                setSelectedCollection(data[0]);
             }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     }
+
 
     const handleSubmission = (e) => {
 
@@ -86,13 +127,26 @@ const FrontPage = () => {
             [name]: value,
         }));
     }; 
+
+    const handleDatabaseChange = (e, { value }) => {
+        
+        setSelectedDatabase(value);
+    };
+
+    const handleCollectionChange = (e, { value }) => {
+        setSelectedCollection((prevOptions) => ({
+            ...prevOptions,
+            value,
+        }));
+    };
+
     return (
 
         <div>
                 <h1>ILI Inputs</h1>
             <form onSubmit={handleSubmission}>
                 <Dropdown
-                    placeholder='Select DataBase'
+                    placeholder='Select Database'
                     fluid
                     search
                     selection
@@ -101,8 +155,22 @@ const FrontPage = () => {
                         text: database,
                         value: database,
                     }))}
-                    onChange={(e, { value }) => setDataBaseName(value)}
+                    onChange={handleDatabaseChange}
                 />
+
+                <Dropdown
+                    placeholder='Select Collection'
+                    fluid
+                    search
+                    selection
+                    options={collections.map((collection, index) => ({
+                        key: index,
+                        text: collection,
+                        value: collection,
+                    }))}
+                    onChange={handleCollectionChange}
+                />
+
 
 
                 <label htmlFor="OuterDiameter">Outer Diameter</label>
