@@ -5,7 +5,7 @@ import "./ILIAnalysisStyling.css";
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { DatabaseContext } from '../App';
 
-class TableComponent extends React.Component {
+class DigListTableComponent extends React.Component {
 
     constructor(props) {
         super(props);
@@ -16,10 +16,9 @@ class TableComponent extends React.Component {
             PressureOfInterest: '',
             WallThickness: '',
             SafetyFactor: '',
-            isCalculated: false,
             LeakRuptureBoundryList: [],
             B31GModifiedFailurePressure: [],
-            MetalLoss: [],
+            MetalLoss: JSON.parse(sessionStorage.metalLoss),
             PressureOfInterest: [],
             B31GCriticalDepth: [],
             FullyMappedVariables: []
@@ -29,14 +28,11 @@ class TableComponent extends React.Component {
 
 
     async componentDidMount() {
-
         if (this.state.isCalculated === true) {
             await this.setState({ MetalLoss: JSON.parse(sessionStorage.metalLoss) });
             await this.calculateFromMetalLossList();
             this.mapFunctions();
         }
-
-
 
 
     }
@@ -112,29 +108,48 @@ class TableComponent extends React.Component {
         this.state.B31GCriticalDepth = responseList4;
 
     }
-        
+
 
     autoSizeStrategy = {
         type: 'fitCellContents',
         defaultMinWidth: 100
     };
 
-    
+
     mapFunctions() {
         let FullChartValues = this.state.MetalLoss.map((metalLoss, index) => {
-            let featureid = metalLoss.featureID;
-            let odometer = metalLoss.odometer;
-            let featuretype = metalLoss.featureType;
-            let depth = metalLoss.depth;
-            let length = metalLoss.length;
-            let featureradial = metalLoss.featureRadial;
-            let wallthickness = metalLoss.wallThickness;
-            let safetyfactor = this.state.B31GModifiedFailurePressure[index].FailurePressure / this.state.PressureOfInterest;
-            let failurepressure = this.state.B31GModifiedFailurePressure[index].FailurePressure;
-            let remainingLife = (this.state.B31GCriticalDepth[index].CriticalDepth - (metalLoss.depth * metalLoss.wallThickness)) / 0.15;
-            let safeoperatingpressure = this.state.B31GModifiedFailurePressure[index].SafeOperatingPressure;
-            let mode = this.state.B31GModifiedFailurePressure[index].FailurePressure > this.state.LeakRuptureBoundryList.PredictedRupturePressure ? "Rupture" : "Leak";
-            let criticalDepth = this.state.B31GCriticalDepth[index].CriticalDepth;
+            let featureid = '';
+            let odometer = '';
+            let featuretype = '';
+            let depth = '';
+            let featureradial = '';
+            let wallthickness = '';
+            let safetyfactor = '';
+            let failurepressure = '';
+            let remainingLife = '';
+            let safeoperatingpressure = '';
+            let mode = '';
+            let length = '';
+
+
+
+            if ((this.state.B31GModifiedFailurePressure[index].FailurePressure / this.state.PressureOfInterest) < this.state.SafetyFactor || (this.state.B31GCriticalDepth[index].CriticalDepth - (metalLoss.depth * metalLoss.wallThickness)) / 0.15 < 10 || metalLoss.depth > 0.7) {
+                featureid = metalLoss.featureID;
+                odometer = metalLoss.odometer;
+                featuretype = metalLoss.featureType;
+                depth = metalLoss.depth;
+                length = metalLoss.length;
+                featureradial = metalLoss.featureRadial;
+                wallthickness = metalLoss.wallThickness;
+                safetyfactor = this.state.B31GModifiedFailurePressure[index].FailurePressure / this.state.PressureOfInterest;
+                failurepressure = this.state.B31GModifiedFailurePressure[index].FailurePressure;
+                remainingLife = (this.state.B31GCriticalDepth[index].CriticalDepth - (metalLoss.depth * metalLoss.wallThickness)) / 0.15;
+                safeoperatingpressure = this.state.B31GModifiedFailurePressure[index].SafeOperatingPressure;
+                mode = this.state.B31GModifiedFailurePressure[index].FailurePressure > this.state.LeakRuptureBoundryList.PredictedRupturePressure ? "Rupture" : "Leak";
+            }
+            else {
+                return null;
+            }
 
             // Combine values as needed
             return {
@@ -149,13 +164,13 @@ class TableComponent extends React.Component {
                 SafetyFactor: safetyfactor,
                 safeOperatingPressure: safeoperatingpressure,
                 remainingLife: remainingLife,
-                criticalDepth: criticalDepth,
                 mode: mode
 
                 // Add more properties as needed
             };
         });
-        this.setState({ FullyMappedVariables: FullChartValues })
+        const newData = FullChartValues.filter(element => element !== null)
+        this.setState({ FullyMappedVariables: newData })
 
     }
 
@@ -211,36 +226,34 @@ class TableComponent extends React.Component {
             field: "mode",
             filter: true
         },
-        {
-            field: "criticalDepth",
-            filter: true
-        }
     ]
 
     render() {
         return (
             <div className="ag-theme-quartz" style={{ justifyContent: 'center', height: 850 }}>
-            <h1>ILI Analysis Table</h1>
-               <DatabaseContext.Consumer>
+                <h1>
+                Dig List
+                </h1>
+                <DatabaseContext.Consumer>
                     {({ inputList, isCalculated }) => {
-                            this.state.OuterDiameter = inputList.OuterDiameter,
+                        this.state.OuterDiameter = inputList.OuterDiameter,
                             this.state.YieldStrength = inputList.YieldStrength,
                             this.state.FullSizedCVN = inputList.FullSizedCVN,
                             this.state.PressureOfInterest = inputList.PressureOfInterest,
                             this.state.WallThickness = inputList.WallThickness,
-                            this.state.SafetyFactor = inputList.SafetyFactor
-                            this.state.isCalculated = isCalculated;                    
+                            this.state.SafetyFactor = inputList.SafetyFactor,
+                            this.state.isCalculated = isCalculated
                     }}
-                    
+
                 </DatabaseContext.Consumer>
-            {/* The AG Grid component */}
-            <AgGridReact pagination={true}
-                autoSizeStrategy={this.autoSizeStrategy}
-                rowData={this.state.FullyMappedVariables}
-                columnDefs={this.collectiveColDef} />
+                {/* The AG Grid component */}
+                <AgGridReact pagination={true}
+                    autoSizeStrategy={this.autoSizeStrategy}
+                    rowData={this.state.FullyMappedVariables}
+                    columnDefs={this.collectiveColDef} />
             </div>
         )
     };
 }
 
-export default TableComponent;
+export default DigListTableComponent;

@@ -11,12 +11,13 @@ const Sidebar = () => {
 
     return(
         <Menu pageWrapId={'App'} outerContainerId={'outer-container'} >
-            <Stack spacing={1}  alignItems="center">
-                <Button variant="text">
-                    <Link to='/' className="nav-link">
+            <Stack spacing={1} alignItems="center">
+                <Link to='/' className="nav-link">
+                   <Button variant="text">
                         Input Page
-                    </Link>
-                </Button>
+                    </Button>
+                </Link>
+
                 <SubMenu />
             </Stack>
 

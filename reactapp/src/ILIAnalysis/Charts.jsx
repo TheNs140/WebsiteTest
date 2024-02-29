@@ -33,7 +33,7 @@ class MainChartApplication extends React.Component {
             SafetyFactor: '',
             LeakRuptureBoundryList: [],
             B31GModifiedFailurePressure: [],
-            GenericLeakRuptureBoundaryCalculation:[], 
+            GenericLeakRuptureBoundaryCalculation: [],
             MetalLoss: JSON.parse(sessionStorage.metalLoss),
             PressureOfInterest: [],
             B31GCriticalDepth: [],
@@ -53,8 +53,7 @@ class MainChartApplication extends React.Component {
             viewState: value
         })
 
-        this.state.viewState.map((totogglechange) =>
-        {
+        this.state.viewState.map((totogglechange) => {
             this.setState({ [totogglechange]: !totogglechange })
         }
         )
@@ -69,7 +68,7 @@ class MainChartApplication extends React.Component {
             SafetyFactor: this.state.SafetyFactor
         };
 
-        let requestOptions = {
+        let requestOptionsB31GFailurePressure = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -78,8 +77,6 @@ class MainChartApplication extends React.Component {
             })
         };
 
-        const response1 = await fetch('/ilib31gmodifiedcalculation', requestOptions)
-        const responseList = await response1.json();
 
 
         let leakRuptureBoundaryInputs = {
@@ -90,7 +87,7 @@ class MainChartApplication extends React.Component {
 
         };
 
-        requestOptions = {
+        let requestOptionsLeakRupture = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -99,8 +96,6 @@ class MainChartApplication extends React.Component {
             })
         };
 
-        const response2 = await fetch('/ilifullleakrupturecalculation', requestOptions)
-        const responseList2 = await response2.json();
 
 
         let genericleakRuptureBoundaryInputs = {
@@ -112,15 +107,11 @@ class MainChartApplication extends React.Component {
 
         };
 
-        requestOptions = {
+        let requestOptionsGenericLeakRupture = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(genericleakRuptureBoundaryInputs)
         };
-
-        const response3 = await fetch('/leakruptureboundrycalculation', requestOptions)
-        const responseList3 = await response3.json();
-
 
 
         let B31GCriticalDepthInputs = {
@@ -132,7 +123,7 @@ class MainChartApplication extends React.Component {
 
         };
 
-        requestOptions = {
+        let requestOptionsB31GCriticalDepth = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -141,8 +132,21 @@ class MainChartApplication extends React.Component {
             })
         };
 
-        const response4 = await fetch('/ilib31gmodifiedcriticaldepth', requestOptions)
-        const responseList4 = await response4.json();
+
+
+        const [response1, response2, response3, response4] = await Promise.all([
+            fetch('/ilib31gmodifiedcalculation', requestOptionsB31GFailurePressure),
+            fetch('/ilifullleakrupturecalculation', requestOptionsLeakRupture),
+            fetch('/leakruptureboundrycalculation', requestOptionsGenericLeakRupture),
+            fetch('/ilib31gmodifiedcriticaldepth', requestOptionsB31GCriticalDepth)
+        ]);
+
+        const [responseList, responseList2, responseList3, responseList4] = await Promise.all([
+            response1.json(),
+            response2.json(),
+            response3.json(),
+            response4.json()
+        ]);
 
 
         this.setState({
@@ -157,213 +161,213 @@ class MainChartApplication extends React.Component {
 
 
 
-    //This is the generic Leak Rupture Boundry List used in the combined chart
-    let dataList = LeakRuptureBoundryList.map((PredictedRupturePressure, index) => {
+        //This is the generic Leak Rupture Boundry List used in the combined chart
+        let dataList = LeakRuptureBoundryList.map((PredictedRupturePressure, index) => {
 
-        // Combine values as needed
-        return {
-            leakRuptureValue: PredictedRupturePressure,
-            index: index + 5
-            // Add more properties as needed
-        };
-    });
+            // Combine values as needed
+            return {
+                leakRuptureValue: PredictedRupturePressure,
+                index: index + 5
+                // Add more properties as needed
+            };
+        });
 
-    //This is the B31G failure Pressure List for the combined chart with Leak Rupture Boundry
-    let b31glist = B31GModifiedFailurePressure.map((B31G, index) => {
-        let featurelength = "";
-        if (metalLoss && typeof metalLoss[index].length !== 'undefined') {
-            featurelength = metalLoss[index].length;
-        }
-        // Combine values as needed
-        return {
-            B31GValues: B31G,
-            featureLength: featurelength,
-            // Add more properties as needed
-        };
-    });
-
-
-    //This is the B31G Failure pressure VS Odometer list
-    let b31GModifiedListWithOdomenter = B31GModifiedFailurePressure.map((B31G, index) => {
-        let odometer = "";
-        if (metalLoss && typeof metalLoss[index].length !== 'undefined') {
-            odometer = metalLoss[index].odometer;
-        }
-        // Combine values as needed
-        return {
-            B31GValues: B31G,
-            Odometer: odometer,
-            // Add more properties as needed
-        };
-    });
+        //This is the B31G failure Pressure List for the combined chart with Leak Rupture Boundry
+        let b31glist = B31GModifiedFailurePressure.map((B31G, index) => {
+            let featurelength = "";
+            if (metalLoss && typeof metalLoss[index].length !== 'undefined') {
+                featurelength = metalLoss[index].length;
+            }
+            // Combine values as needed
+            return {
+                B31GValues: B31G,
+                featureLength: featurelength,
+                // Add more properties as needed
+            };
+        });
 
 
-    //This is generating the list for CorrosionDepthListWithOdometer
-    let corrosionDepthListWithOdomenter = metalLoss.map((metalloss, index) => {
-        let odometer = "";
-        if (metalLoss !== 'undefined') {
-            odometer = metalloss.odometer;
-        }
-        // Combine values as needed
-        return {
-            CorrosionDepth: metalloss.depth,
-            Odometer: odometer,
-            // Add more properties as needed
-        };
-    });
+        //This is the B31G Failure pressure VS Odometer list
+        let b31GModifiedListWithOdomenter = B31GModifiedFailurePressure.map((B31G, index) => {
+            let odometer = "";
+            if (metalLoss && typeof metalLoss[index].length !== 'undefined') {
+                odometer = metalLoss[index].odometer;
+            }
+            // Combine values as needed
+            return {
+                B31GValues: B31G,
+                Odometer: odometer,
+                // Add more properties as needed
+            };
+        });
 
 
-    //This combines the data from the generic Leak Rupture Boudnry List and the B31G Failure Pressure list and combines it. 
-    const data = {
-        datasets: [
-            {
-                label: 'Rupture Pressure Line',
-                data: dataList,
-                parsing: {
-                    xAxisKey: 'index',
-                    yAxisKey: 'leakRuptureValue.PredictedRupturePressure',
+        //This is generating the list for CorrosionDepthListWithOdometer
+        let corrosionDepthListWithOdomenter = metalLoss.map((metalloss, index) => {
+            let odometer = "";
+            if (metalLoss !== 'undefined') {
+                odometer = metalloss.odometer;
+            }
+            // Combine values as needed
+            return {
+                CorrosionDepth: metalloss.depth,
+                Odometer: odometer,
+                // Add more properties as needed
+            };
+        });
+
+
+        //This combines the data from the generic Leak Rupture Boudnry List and the B31G Failure Pressure list and combines it. 
+        const data = {
+            datasets: [
+                {
+                    label: 'Rupture Pressure Line',
+                    data: dataList,
+                    parsing: {
+                        xAxisKey: 'index',
+                        yAxisKey: 'leakRuptureValue.PredictedRupturePressure',
+                    },
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                    pointRadius: '0',
+                    borderColor: 'red',
+                    showLine: true,
+
                 },
-                backgroundColor: 'rgba(255, 99, 132, 1)',
-                pointRadius: '0',
-                borderColor: 'red',
-                showLine: true,
+                {
+                    label: 'B31G Failure Pressures',
+                    data: b31glist,
+                    parsing: {
+                        xAxisKey: 'featureLength',
+                        yAxisKey: 'B31GValues.FailurePressure',
+                    },
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'black',
+                    backgroundColor: 'black'
 
-            },
-            {
-                label: 'B31G Failure Pressures',
-                data: b31glist,
-                parsing: {
-                    xAxisKey: 'featureLength',
-                    yAxisKey: 'B31GValues.FailurePressure',
                 },
-                backgroundColor: 'rgba(255, 99, 132, 1)',
-                borderColor: 'black',
-                backgroundColor: 'black'
-
-            },
-        ],
-    }
-
-
-    //This is generating the list for CorrosionDepthListWithOdometer
-    let RemainingLifeCalculationVSOdometerData = metalLoss.map((metalloss, index) => {
-        let odometer = "";
-        let corrosionDepth = "";
-        if (metalLoss !== 'undefined') {
-            odometer = metalloss.odometer;
-            corrosionDepth = (B31GCriticalDepthCalculations[index].CriticalDepth - metalloss.depth) / 0.15;
+            ],
         }
-        // Combine values as needed
-        return {
-            RemainingLife: corrosionDepth,
-            Odometer: odometer,
-            // Add more properties as needed
-        };
-    });
+
+
+        //This is generating the list for CorrosionDepthListWithOdometer
+        let RemainingLifeCalculationVSOdometerData = metalLoss.map((metalloss, index) => {
+            let odometer = "";
+            let corrosionDepth = "";
+            if (metalLoss !== 'undefined') {
+                odometer = metalloss.odometer;
+                corrosionDepth = (B31GCriticalDepthCalculations[index].CriticalDepth - metalloss.depth) / 0.15;
+            }
+            // Combine values as needed
+            return {
+                RemainingLife: corrosionDepth,
+                Odometer: odometer,
+                // Add more properties as needed
+            };
+        });
 
 
         const options = {
-        scales: {
-            y: {
-                beginAtZero: true,
-            },
-        },
-    }
-
-
-
-    const OdometerVSB31GFailurePressure = {
-        datasets: [
-            {
-                label: 'B31G Failure Pressure',
-                data: b31GModifiedListWithOdomenter,
-                parsing: {
-                    xAxisKey: 'Odometer',
-                    yAxisKey: 'B31GValues.FailurePressure',
+            scales: {
+                y: {
+                    beginAtZero: true,
                 },
-                backgroundColor: 'rgba(255, 99, 132, 1)',
-                pointRadius: '2',
-                borderColor: 'red',
             },
-        ],
-    }
-
-    const OdometerVSB31GFailurePressureOptions = {
-        scales: {
-            y: {
-                beginAtZero: true,
-            },
-        },
-        plugins: {
-            title: {
-                display: true,
-                text: 'Failure Pressure Modified B31G'
-            }
-        },
-    }
+        }
 
 
 
-    const OdometerVSCorrosionDepth = {
-        datasets: [
-            {
-                label: 'Odometer VS Metal Loss Depth',
-                data: corrosionDepthListWithOdomenter,
-                parsing: {
-                    xAxisKey: 'Odometer',
-                    yAxisKey: 'CorrosionDepth',
+        const OdometerVSB31GFailurePressure = {
+            datasets: [
+                {
+                    label: 'B31G Failure Pressure',
+                    data: b31GModifiedListWithOdomenter,
+                    parsing: {
+                        xAxisKey: 'Odometer',
+                        yAxisKey: 'B31GValues.FailurePressure',
+                    },
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                    pointRadius: '2',
+                    borderColor: 'red',
                 },
-                backgroundColor: 'rgba(255, 99, 132, 1)',
-                pointRadius: '2',
-                borderColor: 'red',
-            },
-        ],
-    }
+            ],
+        }
 
-    const OdometerVSCorrosionDepthOptions = {
-        scales: {
-            y: {
-                beginAtZero: true,
-            },
-        },
-        plugins: {
-            title: {
-                display: true,
-                text: 'Metal Loss Depth'
-            }
-        },
-    }
-
-
-
-    const RemainingLifeCalculationVSOdometer = {
-        datasets: [
-            {
-                label: 'Odometer VS Remaining Life',
-                data: RemainingLifeCalculationVSOdometerData,
-                parsing: {
-                    xAxisKey: 'Odometer',
-                    yAxisKey: 'RemainingLife',
+        const OdometerVSB31GFailurePressureOptions = {
+            scales: {
+                y: {
+                    beginAtZero: true,
                 },
-                backgroundColor: 'rgba(255, 99, 132, 1)',
-                pointRadius: '2',
-                borderColor: 'red',
             },
-        ],
-    }
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Failure Pressure Modified B31G'
+                }
+            },
+        }
 
-    const RemainingLifeCalculationVSOdometerOptions = {
-        scales: {
-            y: {
-                beginAtZero: true,
+
+
+        const OdometerVSCorrosionDepth = {
+            datasets: [
+                {
+                    label: 'Odometer VS Metal Loss Depth',
+                    data: corrosionDepthListWithOdomenter,
+                    parsing: {
+                        xAxisKey: 'Odometer',
+                        yAxisKey: 'CorrosionDepth',
+                    },
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                    pointRadius: '2',
+                    borderColor: 'red',
+                },
+            ],
+        }
+
+        const OdometerVSCorrosionDepthOptions = {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
             },
-        },
-        plugins: {
-            title: {
-                display: true,
-                text: 'Remaining Life Modified B31G'
-            }
-        },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Metal Loss Depth'
+                }
+            },
+        }
+
+
+
+        const RemainingLifeCalculationVSOdometer = {
+            datasets: [
+                {
+                    label: 'Odometer VS Remaining Life',
+                    data: RemainingLifeCalculationVSOdometerData,
+                    parsing: {
+                        xAxisKey: 'Odometer',
+                        yAxisKey: 'RemainingLife',
+                    },
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                    pointRadius: '2',
+                    borderColor: 'red',
+                },
+            ],
+        }
+
+        const RemainingLifeCalculationVSOdometerOptions = {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Remaining Life Modified B31G'
+                }
+            },
         }
 
 
@@ -382,27 +386,27 @@ class MainChartApplication extends React.Component {
                     Remaining Life
                 </ToggleButton>
             </ToggleButtonGroup>
-            <div className={"chart-container"} style={{ display: "inline-flex", flexDirection: "column", gap:'12vh', width: "80%" }}> 
-            {this.state.viewState.includes('ViewRupturePressureLineWithB31GFailurePressure') && (
-                <Scatter options={options} data={data} />
-            )}
-            {this.state.viewState.includes('ViewB31GFailurePressure') && (
-                <Scatter options={OdometerVSB31GFailurePressureOptions} data={OdometerVSB31GFailurePressure} />
-            )}
-            {this.state.viewState.includes('ViewMetalLossDepth') && (
-                <Scatter options={OdometerVSCorrosionDepthOptions} data={OdometerVSCorrosionDepth} />
-            )}
-            {this.state.viewState.includes('ViewRemainingLife') && (
-                <Scatter options={RemainingLifeCalculationVSOdometerOptions} data={RemainingLifeCalculationVSOdometer} />
+            <div className={"chart-container"} style={{ display: "inline-flex", flexDirection: "column", gap: '12vh', width: "80%" }}>
+                {this.state.viewState.includes('ViewRupturePressureLineWithB31GFailurePressure') && (
+                    <Scatter options={options} data={data} />
+                )}
+                {this.state.viewState.includes('ViewB31GFailurePressure') && (
+                    <Scatter options={OdometerVSB31GFailurePressureOptions} data={OdometerVSB31GFailurePressure} />
+                )}
+                {this.state.viewState.includes('ViewMetalLossDepth') && (
+                    <Scatter options={OdometerVSCorrosionDepthOptions} data={OdometerVSCorrosionDepth} />
+                )}
+                {this.state.viewState.includes('ViewRemainingLife') && (
+                    <Scatter options={RemainingLifeCalculationVSOdometerOptions} data={RemainingLifeCalculationVSOdometer} />
                 )}
             </div>
-    </div>
-}
+        </div>
+    }
 
 
     render() {
         return (
-        
+
             <div>
                 <DatabaseContext.Consumer>
                     {({ inputList, isCalculated }) => {
@@ -422,4 +426,3 @@ class MainChartApplication extends React.Component {
     }
 }
 export default MainChartApplication
-

@@ -44,8 +44,10 @@ export function SubMenu() {
              </Link>
             <Link to='/Chart' className="nav-link">
                 <MenuItem onClick={handleClose}>Charts</MenuItem>
-            </Link>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                </Link>
+                <Link to='/DigList' className="nav-link">
+                    <MenuItem onClick={handleClose}>Dig List</MenuItem>
+                </Link>
             </Menu>
         </div>
     );

@@ -74,7 +74,7 @@ const FrontPage = () => {
         setIsCalculated(true);
 
 
-        navigate("/Table")
+        navigate('/Table');
 
     }
 
@@ -88,7 +88,8 @@ const FrontPage = () => {
     }; 
     return (
 
-      <div>
+        <div>
+                <h1>ILI Inputs</h1>
             <form onSubmit={handleSubmission}>
                 <Dropdown
                     placeholder='Select DataBase'
