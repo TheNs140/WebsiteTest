@@ -12,10 +12,17 @@ namespace webapi.Controllers
     [Route("[controller]")]
     public class MetalLossController:ControllerBase
     {
+        public class MetalLossParameterBinding
+        {
+            public string database { get; set; }
+            public string collection { get; set; }
+        }
 
         [HttpPost]
-        public IEnumerable<MetalLossDatabaseModel> Post([FromBody] string dataBaseName)
+        public IEnumerable<MetalLossDatabaseModel> Post([FromBody] MetalLossParameterBinding parameters)
         {
+
+
             const string connectionUri = "mongodb+srv://NCIS_website_18941:F47DzEW64qjc43PpihvHvuVFCu3qUuiJyqKkcJsDSCb@production.byyabze.mongodb.net/";
             var settings = MongoClientSettings.FromConnectionString(connectionUri);
             // Set the ServerApi field of the settings object to set the version of the Stable API on the client
@@ -32,9 +39,9 @@ namespace webapi.Controllers
                 Console.WriteLine(ex);
             }
 
-            var dbList = client.GetDatabase(dataBaseName);
+            var dbList = client.GetDatabase(parameters.database);
 
-            var collectionList = dbList.GetCollection<MetalLossDatabaseModel>("model_onstream_xlsx___20240216");
+            var collectionList = dbList.GetCollection<MetalLossDatabaseModel>(parameters.collection);
 
             var filter = Builders<MetalLossDatabaseModel>.Filter.Eq(r => r.featureType, "Metal Loss");
             var allMetalLoss = collectionList.Find(filter).ToList();
