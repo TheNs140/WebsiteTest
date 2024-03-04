@@ -2,6 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { DatabaseContext } from './App'
 import { Dropdown } from 'semantic-ui-react'
 import { useNavigate } from "react-router-dom";
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 
 
 
@@ -137,17 +142,23 @@ const FrontPage = () => {
         }));
     }; 
 
-    const handleDatabaseChange = (e, { value }) => {
-        
+    const handleDatabaseChange = (event) => {
+        const { value } = event.target;
+
         setSelectedDatabase((prevOptions) => ({
             ...prevOptions,
-            database: value
+            database: value,
         }));
+
         setDataBaseName(value);
         fetchCollections();
     };
 
-    const handleCollectionChange = (e, { value }) => {
+    const handleCollectionChange = (event) => {
+
+        const { value } = event.target;
+
+
         setSelectedCollection((prevOptions) => ({
             ...prevOptions,
             collection: value
@@ -158,37 +169,47 @@ const FrontPage = () => {
     return (
 
         <div>
-                <h1>ILI Inputs</h1>
-            <form onSubmit={handleSubmission}>
-                <Dropdown
-                    placeholder='Select Database'
-                    fluid
-                    search
-                    selection
-                    options={databases.map((database, index) => ({
-                        key: index,
-                        text: database,
-                        value: database,
-                    }))}
+            <h1>ILI Inputs</h1>
+
+            <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Database</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={selectedDatabase.database || ''}
+                    label="Database"
                     onChange={handleDatabaseChange}
-                />
+                >
+                    {databases.map((value) => (
+                        <MenuItem key={value} value={value}>
+                            {value}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+
                 {collections.length > 0 && (
-                    <Dropdown
-                        placeholder='Select Collection'
-                        fluid
-                        search
-                        selection
-                        options={collections.map((collection, index) => ({
-                            key: index,
-                            text: collection,
-                            value: collection,
-                        }))}
-                        onChange={handleCollectionChange}
-                    />
+                    <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Collection</InputLabel>
+
+                         <Select
+                            labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={selectedCollection.collection || ''}
+                            label="Collection"
+                            onChange={handleCollectionChange}
+                        >
+                            {collections.map((value) => (
+                                <MenuItem key={value} value={value}>
+                                    {value}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
                 )}
-
-
-
+                <h1></h1>
+            <form onSubmit={handleSubmission}>
                 <label htmlFor="OuterDiameter">Outer Diameter</label>
                 <input type="text" id="OuterDiameter" name="OuterDiameter" value={inputValues.OuterDiameter} onChange={handleInputChange} />
 

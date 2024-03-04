@@ -17,13 +17,18 @@ const Sidebar = () => {
                         Input Page
                     </Button>
                 </Link>
-
+                <Link to='/PreAnalysisChart' className="nav-link">
+                    <Button variant="text">
+                        Pre-Analysis Chart
+                    </Button>
+                </Link>
                 <SubMenu />
                 <Link to='/DigList' className="nav-link">
                     <Button variant="text">
                         Dig List
                     </Button>
                 </Link>
+
             </Stack>
 
         </Menu>

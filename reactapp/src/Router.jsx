@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import ILIAnalysis from './ILIAnalysis/ILIAnalysis';
 import FrontPage from './FrontPage';
 import TableComponent from './ILIAnalysis/Table';
-import MainChartApplication from './ILIAnalysis/Charts';
+import MainChartApplication from './ILIAnalysis/ILIAnalysisChart';
 import DigListTableComponent from './ILIAnalysis/DigList';
 import { DatabaseContext } from './App';
+import PreAnalysisChart from './PreAnalysis/PreAnalysisChart';
 
 
 const Router = () => {
@@ -29,6 +29,9 @@ const Router = () => {
                     <Route path='/Table' element={<TableComponent />} />
                     <Route path='/Chart' element={<MainChartApplication />} />
                     <Route path='/DigList' element={<DigListTableComponent />} />
+                    <Route path='/DigList' element={<DigListTableComponent />} />
+                    <Route path='/PreAnalysisChart' element={<PreAnalysisChart/>} />
+
                 </>
             ) : (
                 <Route
