@@ -26,7 +26,7 @@ export function SubMenu() {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
-                ILI Analysis
+                ILI Analysis +
             </Button>
             <Menu
                 id="basic-menu"
