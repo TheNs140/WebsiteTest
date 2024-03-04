@@ -12,13 +12,18 @@ const FrontPage = () => {
     const { inputList, setInputList } = useContext(DatabaseContext);
     const { isCalculated, setIsCalculated } = useContext(DatabaseContext);
 
-    const [selectedDatabase, setSelectedDatabase] = useState('');
+    const [selectedDatabase, setSelectedDatabase] = useState({
+        database: ''
+    });
+
     const [databases, setDatabases] = useState([]);
 
 
     const [ collectionName, setCollectionName ] = useState('');
     const [collections, setCollections] = useState([]);
-    const [selectedCollection, setSelectedCollection] = useState([]);
+    const [selectedCollection, setSelectedCollection] = useState({
+        collection: ''
+    });
 
 
 
@@ -37,10 +42,10 @@ const FrontPage = () => {
     }, []);
 
     useEffect(() => {
-        if (selectedDatabase !== '') {
+        if (selectedDatabase.database) {
             fetchCollections();
         }
-    }, []);
+    }, [selectedDatabase]);
 
 
     const fetchData = async () => {
@@ -51,7 +56,9 @@ const FrontPage = () => {
 
 
 
-
+            if (data.length > 0) {
+                setSelectedDatabase(data[0]);
+            }
             setDatabases(data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -67,7 +74,7 @@ const FrontPage = () => {
             let options = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(selectedDatabase)
+                body: JSON.stringify( selectedDatabase.database)
             };
 
 
@@ -77,7 +84,7 @@ const FrontPage = () => {
 
 
 
-            setCollections(data);
+            setCollections(collections => data);
             // Set the default selected database (optional)
             if (data.length > 0) {
                 setSelectedCollection(data[0]);
@@ -88,13 +95,12 @@ const FrontPage = () => {
     }
 
 
-    const handleSubmission = (e) => {
+    const handleSubmission = async(e) => {
 
 
         e.preventDefault();
         setInputList(inputValues);
-
-        getMetalLossFeatures();
+        await getMetalLossFeatures();
 
     }
 
@@ -104,14 +110,17 @@ const FrontPage = () => {
         let requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dataBaseName)
+            body: JSON.stringify({
+                database: dataBaseName,
+                collection: collectionName
+            })
         };
 
         const response = await fetch('metalloss', requestOptions);
         const data = await response.json();
         let metalLoss = data;
 
-        sessionStorage.setItem('metalLoss', JSON.stringify(metalLoss))
+        await sessionStorage.setItem('metalLoss', JSON.stringify(metalLoss))
         setIsCalculated(true);
 
 
@@ -130,14 +139,20 @@ const FrontPage = () => {
 
     const handleDatabaseChange = (e, { value }) => {
         
-        setSelectedDatabase(value);
+        setSelectedDatabase((prevOptions) => ({
+            ...prevOptions,
+            database: value
+        }));
+        setDataBaseName(value);
+        fetchCollections();
     };
 
     const handleCollectionChange = (e, { value }) => {
         setSelectedCollection((prevOptions) => ({
             ...prevOptions,
-            value,
+            collection: value
         }));
+        setCollectionName(value);
     };
 
     return (
@@ -157,19 +172,21 @@ const FrontPage = () => {
                     }))}
                     onChange={handleDatabaseChange}
                 />
+                {collections.length > 0 && (
+                    <Dropdown
+                        placeholder='Select Collection'
+                        fluid
+                        search
+                        selection
+                        options={collections.map((collection, index) => ({
+                            key: index,
+                            text: collection,
+                            value: collection,
+                        }))}
+                        onChange={handleCollectionChange}
+                    />
+                )}
 
-                <Dropdown
-                    placeholder='Select Collection'
-                    fluid
-                    search
-                    selection
-                    options={collections.map((collection, index) => ({
-                        key: index,
-                        text: collection,
-                        value: collection,
-                    }))}
-                    onChange={handleCollectionChange}
-                />
 
 
                 <label htmlFor="OuterDiameter">Outer Diameter</label>
