@@ -172,7 +172,6 @@ const FrontPage = () => {
                 />
 
 
-
                 <label htmlFor="OuterDiameter">Outer Diameter</label>
                 <input type="text" id="OuterDiameter" name="OuterDiameter" value={inputValues.OuterDiameter} onChange={handleInputChange} />
 
