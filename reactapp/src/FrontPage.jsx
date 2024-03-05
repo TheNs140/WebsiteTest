@@ -169,7 +169,7 @@ const FrontPage = () => {
     return (
 
         <div>
-            <h1>ILI Inputs</h1>
+            <h1>Database Selection</h1>
 
             <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Database</InputLabel>
@@ -187,7 +187,6 @@ const FrontPage = () => {
                     ))}
                 </Select>
             </FormControl>
-
                 {collections.length > 0 && (
                     <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Collection</InputLabel>
@@ -208,22 +207,25 @@ const FrontPage = () => {
                     </FormControl>
 
                 )}
-                <h1></h1>
+            <h1>Pipeline Inputs</h1>
+
+
+
             <form onSubmit={handleSubmission}>
-                <label htmlFor="OuterDiameter">Outer Diameter</label>
+                <label htmlFor="OuterDiameter">Diameter (mm)</label>
                 <input type="text" id="OuterDiameter" name="OuterDiameter" value={inputValues.OuterDiameter} onChange={handleInputChange} />
 
-                <label htmlFor="YieldStrength">Yield Strength</label>
+                <label htmlFor="WallThickness">Wall Thickness (mm)</label>
+                <input type="text" id="WallThickness" name="WallThickness" value={inputValues.WallThickness} onChange={handleInputChange} />
+
+                <label htmlFor="YieldStrength">Grade (MPa)</label>
                 <input type="text" id="YieldStrength" name="YieldStrength" value={inputValues.YieldStrength} onChange={handleInputChange} />
 
-                <label htmlFor="FullSizedCVN">Full Sized CVN</label>
+                <label htmlFor="FullSizedCVN">CVN Toughness (J)</label>
                 <input type="text" id="FullSizedCVN" name="FullSizedCVN" value={inputValues.FullSizedCVN} onChange={handleInputChange} />
 
-                <label htmlFor="PressureOfInterest">Pressure of Interest</label>
+                <label htmlFor="PressureOfInterest">MOP (kPa)</label>
                 <input type="text" id="PressureOfInterest" name="PressureOfInterest" value={inputValues.PressureOfInterest} onChange={handleInputChange} />
-
-                <label htmlFor="WallThickness">Wall Thickness</label>
-                <input type="text" id="WallThickness" name="WallThickness" value={inputValues.WallThickness} onChange={handleInputChange} />
 
                 <label htmlFor="SafetyFactor">Safety Factor</label>
                 <input type="text" id="SafetyFactor" name="SafetyFactor" value={inputValues.SafetyFactor} onChange={handleInputChange} />

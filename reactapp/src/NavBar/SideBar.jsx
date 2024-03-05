@@ -19,7 +19,7 @@ const Sidebar = () => {
                 </Link>
                 <Link to='/PreAnalysisChart' className="nav-link">
                     <Button variant="text">
-                        Pre-Analysis Chart
+                        Pre-Analysis
                     </Button>
                 </Link>
                 <SubMenu />

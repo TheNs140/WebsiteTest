@@ -167,7 +167,7 @@ class MainChartApplication extends React.Component {
             // Combine values as needed
             return {
                 leakRuptureValue: PredictedRupturePressure,
-                index: index + 5
+                index: index * 5
                 // Add more properties as needed
             };
         });

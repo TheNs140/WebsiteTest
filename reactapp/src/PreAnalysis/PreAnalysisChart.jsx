@@ -37,9 +37,8 @@ class PreAnalysisChart extends React.Component {
             PressureOfInterest: '',
             WallThickness: '',
             SafetyFactor: '',
-            LeakRuptureBoundryList: [],
-            B31GModifiedFailurePressure: [],
             GenericLeakRuptureBoundaryCalculation: [],
+            GenericB31GCriticalDepth: [],
             MetalLoss: JSON.parse(sessionStorage.metalLoss),
             PressureOfInterest: [],
             B31GCriticalDepth: [],
@@ -68,44 +67,9 @@ class PreAnalysisChart extends React.Component {
 
 
     async calculateFromMetalLossList() {
-        let b31GInputs = {
-            OuterDiameter: this.state.OuterDiameter,
-            YieldStrength: this.state.YieldStrength,
-            PressureOfInterest: this.state.PressureOfInterest,
-            SafetyFactor: this.state.SafetyFactor
-        };
-
-        let requestOptionsB31GFailurePressure = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                data: this.state.MetalLoss,
-                inputs: b31GInputs
-            })
-        };
 
 
-
-        let leakRuptureBoundaryInputs = {
-            OuterDiameter: this.state.OuterDiameter,
-            FullSizedCVN: this.state.FullSizedCVN,
-            PressureOfInterest: this.state.PressureOfInterest,
-            YieldStrength: this.state.YieldStrength
-
-        };
-
-        let requestOptionsLeakRupture = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                data: this.state.MetalLoss,
-                inputs: leakRuptureBoundaryInputs
-            })
-        };
-
-
-
-        let genericleakRuptureBoundaryInputs = {
+        let genericB31GCriticalDepthInputs = {
             OuterDiameter: this.state.OuterDiameter,
             FullSizedCVN: this.state.FullSizedCVN,
             PressureOfInterest: this.state.PressureOfInterest,
@@ -114,57 +78,28 @@ class PreAnalysisChart extends React.Component {
 
         };
 
-        let requestOptionsGenericLeakRupture = {
+        let requestOptionsGenericB31GCriticalDepth = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(genericleakRuptureBoundaryInputs)
+            body: JSON.stringify(genericB31GCriticalDepthInputs)
         };
 
 
-        let B31GCriticalDepthInputs = {
-            OuterDiameter: this.state.OuterDiameter,
-            FullSizedCVN: this.state.FullSizedCVN,
-            PressureOfInterest: this.state.PressureOfInterest,
-            YieldStrength: this.state.YieldStrength,
-            WallThickness: this.state.WallThickness
-
-        };
-
-        let requestOptionsB31GCriticalDepth = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                data: this.state.MetalLoss,
-                inputs: B31GCriticalDepthInputs
-            })
-        };
-
-
-
-        const [response1, response2, response3, response4] = await Promise.all([
-            fetch('/ilib31gmodifiedcalculation', requestOptionsB31GFailurePressure),
-            fetch('/ilifullleakrupturecalculation', requestOptionsLeakRupture),
-            fetch('/leakruptureboundrycalculation', requestOptionsGenericLeakRupture),
-            fetch('/ilib31gmodifiedcriticaldepth', requestOptionsB31GCriticalDepth)
+        const [response1] = await Promise.all([
+            fetch('/b31gcriticaldepthcalculation', requestOptionsGenericB31GCriticalDepth)
         ]);
 
-        const [responseList, responseList2, responseList3, responseList4] = await Promise.all([
+        const [responseList] = await Promise.all([
             response1.json(),
-            response2.json(),
-            response3.json(),
-            response4.json()
         ]);
 
 
         this.setState({
-            B31GCriticalDepth: responseList4,
-            LeakRuptureBoundryList: responseList2,
-            B31GModifiedFailurePressure: responseList,
-            GenericLeakRuptureBoundaryCalculation: responseList3
+            GenericB31GCriticalDepth: responseList
         })
     }
 
-    App(LeakRuptureBoundryList, B31GModifiedFailurePressure, metalLoss, B31GCriticalDepthCalculations) {
+    App(metalLoss, GenericB31GCriticalDepth) {
 
 
         //This is generating the list for CorrosionDepthListWithOdometer
@@ -284,6 +219,86 @@ class PreAnalysisChart extends React.Component {
             },
         }
 
+        //This is the generic Leak Rupture Boundry List used in the combined chart
+        let dataList = GenericB31GCriticalDepth.map((CriticalDepth, index) => {
+
+            // Combine values as needed
+            return {
+                CriticalDepth: CriticalDepth,
+                index: index + 5
+                // Add more properties as needed
+            };
+        });
+
+        //This is generating the list for CorrosionDepthListWithOdometer
+        let corrosionDepthListWithFeatureLength = metalLoss.map((metalloss, index) => {
+            let odometer = "";
+            if (metalLoss !== 'undefined') {
+                odometer = metalloss.odometer;
+            }
+            // Combine values as needed
+            return {
+                CorrosionDepth: metalloss.depth * metalloss.wallThickness,
+                featureLength: metalloss.length,
+                featureRadial: metalloss.featureRadial,
+                // Add more properties as needed
+            };
+        });
+
+        const CorrosionDepthVSFeatureLength = {
+            datasets: [
+                {
+                    label: 'Critical Depth Line',
+                    data: dataList,
+                    parsing: {
+                        xAxisKey: 'index',
+                        yAxisKey: 'CriticalDepth.CriticalDepth',
+                    },
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                    pointRadius: '0',
+                    borderColor: 'red',
+                    showLine: true,
+
+                },
+                {
+                    label: 'Internal Metal Loss',
+                    data: corrosionDepthListWithFeatureLength.filter((metalloss => metalloss.featureRadial == "Internal")),
+                    parsing: {
+                        xAxisKey: 'featureLength',
+                        yAxisKey: 'CorrosionDepth',
+                    },
+                    backgroundColor: 'rgba(0, 0, 0, 1)',
+                    pointRadius: '2',
+                    borderColor: 'black',
+                },
+                {
+                    label: 'External Metal Loss',
+                    data: corrosionDepthListWithFeatureLength.filter((metalloss => metalloss.featureRadial == "External")),
+                    parsing: {
+                        xAxisKey: 'featureLength',
+                        yAxisKey: 'CorrosionDepth',
+                    },
+                    backgroundColor: 'rgba(31.4, 78.4, 47.1, 1)',
+                    pointRadius: '2',
+                    borderColor: 'green',
+                },
+            ],
+        }
+
+        const CorrosionDepthVSFeatureLengthOptions = {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Metal Loss Depth'
+                }
+            },
+        }
+
 
         return <div>
             <ToggleButtonGroup value={this.state.viewState} onChange={this.handleToggleChange}>
@@ -293,6 +308,9 @@ class PreAnalysisChart extends React.Component {
                 <ToggleButton value="MetalLossHistogram">
                     Metal Loss Histogram
                 </ToggleButton>
+                <ToggleButton value="ViewGenericB31GCriticalDepth">
+                    Critical Depth VS Feature Length
+                </ToggleButton>
             </ToggleButtonGroup>
 
             <div className={"chart-container"} style={{ display: "inline-flex", flexDirection: "column", gap: '12vh', width: "80%" }}>
@@ -300,6 +318,8 @@ class PreAnalysisChart extends React.Component {
                     <Bar options={options} data={data} />)}
                 {this.state.viewState.includes('ViewOdometerVSCorrosionDepth') && (
                     <Scatter options={OdometerVSCorrosionDepthOptions} data={OdometerVSCorrosionDepth} />)}
+                {this.state.viewState.includes('ViewGenericB31GCriticalDepth') && (
+                    <Scatter options={CorrosionDepthVSFeatureLengthOptions} data={CorrosionDepthVSFeatureLength} />)}
 
             </div>
         </div>
@@ -321,7 +341,7 @@ class PreAnalysisChart extends React.Component {
 
                     }}
                 </DatabaseContext.Consumer>
-                {this.App(this.state.GenericLeakRuptureBoundaryCalculation, this.state.B31GModifiedFailurePressure, this.state.MetalLoss, this.state.B31GCriticalDepth)}
+                {this.App(this.state.MetalLoss, this.state.GenericB31GCriticalDepth)}
             </div>
         )
     }

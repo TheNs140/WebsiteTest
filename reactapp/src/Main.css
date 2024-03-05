@@ -37,6 +37,11 @@
     padding: 0.5em !important;
 }
 
+h1{
+    font-size: 1.8em;
+
+}
+
 .card {
   padding: 2em;
 }

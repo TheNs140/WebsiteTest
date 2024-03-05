@@ -69,6 +69,10 @@ export default defineConfig({
                 target: 'http://localhost:5077/',
                 secure: false
 
+            }, '^/b31gcriticaldepthcalculation': {
+                target: 'http://localhost:5077/',
+                secure: false
+
             }, '^/collection': {
                 target: 'http://localhost:5077/',
                 secure: false
