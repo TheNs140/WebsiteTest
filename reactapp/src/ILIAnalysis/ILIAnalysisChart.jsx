@@ -8,7 +8,7 @@ import {
     Legend,
     Title,
 } from 'chart.js';
-import { Scatter } from 'react-chartjs-2';
+import { Bar, Scatter } from 'react-chartjs-2';
 import { extend, map } from 'jquery';
 import { DatabaseContext } from '../App';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -252,7 +252,7 @@ class MainChartApplication extends React.Component {
             let corrosionDepth = "";
             if (metalLoss !== 'undefined') {
                 odometer = metalloss.odometer;
-                corrosionDepth = (B31GCriticalDepthCalculations[index].CriticalDepth - metalloss.depth) / 0.15;
+                corrosionDepth = (B31GCriticalDepthCalculations[index].CriticalDepth - (metalloss.depth * metalloss.wallThickness)) / 0.15;
             }
             // Combine values as needed
             return {
@@ -391,6 +391,206 @@ class MainChartApplication extends React.Component {
         }
 
 
+        let remainingLifeHistogramLabel = ['<2', '2 to 4', '4 to 6', '6 to 8', '8 to 10', '10 to 15', '15 to 20', '>20']
+
+
+        let remainingLifeData = metalLoss.map((metalloss, index) => {
+            return {
+                featureRadial: metalloss.featureRadial,
+                remainingLife: (B31GCriticalDepthCalculations[index].CriticalDepth - (metalloss.depth * metalloss.wallThickness)) / 0.15,
+            }
+        });
+
+        let internalRemainingLifeData = remainingLifeData.filter((element => element.featureRadial == 'Internal'))
+        let externalRemainingLifeData = remainingLifeData.filter((element => element.featureRadial == 'External'))
+
+
+        let internalRemainingLifeDataCount = [0, 0, 0, 0, 0, 0, 0, 0]
+        for (let i = 0; i < internalRemainingLifeData.length; i++) {
+            if (internalRemainingLifeData[i].remainingLife < 2) {
+                internalRemainingLifeDataCount[0] += 1
+            }
+            if (2 < internalRemainingLifeData[i].remainingLife && internalRemainingLifeData[i].remainingLife < 4){
+                internalRemainingLifeDataCount[1] += 1
+            }
+            if (4 < internalRemainingLifeData[i].remainingLife && internalRemainingLifeData[i].remainingLife < 6){
+                internalRemainingLifeDataCount[2] += 1
+            }
+            if (6 < internalRemainingLifeData[i].remainingLife && internalRemainingLifeData[i].remainingLife < 8){
+                internalRemainingLifeDataCount[3] += 1
+            }
+            if (8 < internalRemainingLifeData[i].remainingLife < 10){
+                internalRemainingLifeDataCount[4] += 1
+            }
+            if (10 < internalRemainingLifeData[i].remainingLife && internalRemainingLifeData[i].remainingLife < 15) {
+                internalRemainingLifeDataCount[2] += 1
+            }
+            if (15 < internalRemainingLifeData[i].remainingLife && internalRemainingLifeData[i].remainingLife < 20) {
+                internalRemainingLifeDataCount[3] += 1
+            }
+            if (20 < internalRemainingLifeData[i].remainingLife) {
+                internalRemainingLifeDataCount[4] += 1
+            }
+            
+        }
+
+        let externalRemainingLifeDataCount = [0, 0, 0, 0, 0]
+        for (let i = 0; i < externalRemainingLifeData.length; i++) {
+            if (externalRemainingLifeData[i].remainingLife < 2) {
+                externalRemainingLifeDataCount[0] += 1
+            }
+            if (2 < externalRemainingLifeData[i].remainingLife && externalRemainingLifeData[i].remainingLife < 4) {
+                externalRemainingLifeDataCount[1] += 1
+            }
+            if (4 < externalRemainingLifeData[i].remainingLife && externalRemainingLifeData[i].remainingLife < 6) {
+                externalRemainingLifeDataCount[2] += 1
+            }
+            if (6 < externalRemainingLifeData[i].remainingLife && externalRemainingLifeData[i].remainingLife < 8) {
+                externalRemainingLifeDataCount[3] += 1
+            }
+            if (8 < externalRemainingLifeData[i].remainingLife < 10) {
+                externalRemainingLifeDataCount[4] += 1
+            }
+            if (10 < externalRemainingLifeData[i].remainingLife && externalRemainingLifeData[i].remainingLife < 15) {
+                externalRemainingLifeDataCount[2] += 1
+            }
+            if (15 < externalRemainingLifeData[i].remainingLife && externalRemainingLifeData[i].remainingLife < 20) {
+                externalRemainingLifeDataCount[3] += 1
+            }
+            if (20 < externalRemainingLifeData[i].remainingLife) {
+                externalRemainingLifeDataCount[4] += 1
+            }
+
+        }
+
+
+
+        const remainingLifeHistogram = {
+            labels: remainingLifeHistogramLabel,
+            datasets: [
+                {
+                    label: 'Internal Features',
+                    data: internalRemainingLifeDataCount,
+                    backgroundColor: 'rgba(0, 0, 0, 1)',
+
+
+                },
+                {
+                    label: 'External Features',
+                    data: externalRemainingLifeDataCount,
+                    backgroundColor: 'rgba(31.4, 78.4, 47.1, 1)',
+
+
+                },
+            ],
+        }
+        const remainingLifeHistogramOptions = {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Remaining Life Histogram'
+                }
+            },
+        }
+
+
+        let safetyFactorHistogramLabel = ['<1', '1 to 1.1', '1.1 to 1.25', '1.25 to 1.39', '>1.39']
+
+
+        let safetyFactorHistogramData = metalLoss.map((metalloss, index) => {
+            return {
+                featureRadial: metalloss.featureRadial,
+                safetyfactor: this.state.B31GModifiedFailurePressure[index].FailurePressure / this.state.PressureOfInterest,
+            }
+        });
+
+        let internalSafetyFactorHistogramData = safetyFactorHistogramData.filter((element => element.featureRadial == 'Internal'))
+        let externalSafetyFactorHistogramData = safetyFactorHistogramData.filter((element => element.featureRadial == 'External'))
+
+
+        let internalSafetyFactorHistogramDataCount = [0, 0, 0, 0, 0]
+        for (let i = 0; i < internalSafetyFactorHistogramData.length; i++) {
+            if (internalSafetyFactorHistogramData[i].safetyfactor < 1) {
+                internalSafetyFactorHistogramDataCount[0] += 1
+            }
+            if (1 < internalSafetyFactorHistogramData[i].safetyfactor && internalSafetyFactorHistogramData[i].safetyfactor < 1.1) {
+                internalSafetyFactorHistogramDataCount[1] += 1
+            }
+            if (1.1 < internalSafetyFactorHistogramData[i].safetyfactor && internalSafetyFactorHistogramData[i].safetyfactor < 1.25) {
+                internalSafetyFactorHistogramDataCount[2] += 1
+            }
+            if (1.25 < internalSafetyFactorHistogramData[i].safetyfactor && internalSafetyFactorHistogramData[i].safetyfactor < 1.39) {
+                internalSafetyFactorHistogramDataCount[3] += 1
+            }
+            if (1.39 < internalSafetyFactorHistogramData[i].safetyfactor) {
+                internalSafetyFactorHistogramDataCount[4] += 1
+            }
+
+        }
+
+        let externalSafetyFactorHistogramDataCount = [0, 0, 0, 0, 0]
+        for (let i = 0; i < externalSafetyFactorHistogramData.length; i++) {
+            if (externalSafetyFactorHistogramData[i].safetyfactor < 1) {
+                externalSafetyFactorHistogramDataCount[0] += 1
+            }
+            if (1 < externalSafetyFactorHistogramData[i].safetyfactor && externalSafetyFactorHistogramData[i].safetyfactor < 1.1) {
+                externalSafetyFactorHistogramDataCount[1] += 1
+            }
+            if (1.1 < externalSafetyFactorHistogramData[i].safetyfactor && externalSafetyFactorHistogramData[i].safetyfactor < 1.25) {
+                externalSafetyFactorHistogramDataCount[2] += 1
+            }
+            if (1.25 < externalSafetyFactorHistogramData[i].safetyfactor && externalSafetyFactorHistogramData[i].safetyfactor < 1.39) {
+                externalSafetyFactorHistogramDataCount[3] += 1
+            }
+            if (1.39 < externalSafetyFactorHistogramData[i].safetyfactor) {
+                externalSafetyFactorHistogramDataCount[4] += 1
+            }
+
+        }
+
+
+
+        const safetyFactorHistogram = {
+            labels: safetyFactorHistogramLabel,
+            datasets: [
+                {
+                    label: 'Internal Features',
+                    data: internalSafetyFactorHistogramDataCount,
+                    backgroundColor: 'rgba(0, 0, 0, 1)',
+
+
+                },
+                {
+                    label: 'External Features',
+                    data: externalSafetyFactorHistogramDataCount,
+                    backgroundColor: 'rgba(31.4, 78.4, 47.1, 1)',
+
+
+                },
+            ],
+        }
+        const safetyFactorHistogramOptions = {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Safety Factor Histogram'
+                }
+            },
+        }
+
+
+
+
         return <div>
             <ToggleButtonGroup value={this.state.viewState} onChange={this.handleToggleChange}>
                 <ToggleButton value="ViewRupturePressureLineWithB31GFailurePressure">
@@ -401,6 +601,12 @@ class MainChartApplication extends React.Component {
                 </ToggleButton>
                 <ToggleButton value="ViewRemainingLife">
                     Remaining Life
+                </ToggleButton>
+                <ToggleButton value="ViewSafetyFactorHistogram">
+                    Safety Factor Histogram
+                </ToggleButton>
+                <ToggleButton value="ViewRemainingLifeHistogram">
+                    Remaining Life Histogram
                 </ToggleButton>
             </ToggleButtonGroup>
             <div className={"chart-container"} style={{ display: "inline-flex", flexDirection: "column", gap: '12vh', width: "80%" }}>
@@ -413,6 +619,10 @@ class MainChartApplication extends React.Component {
                 {this.state.viewState.includes('ViewRemainingLife') && (
                     <Scatter options={RemainingLifeCalculationVSOdometerOptions} data={RemainingLifeCalculationVSOdometer} />
                 )}
+                {this.state.viewState.includes('ViewSafetyFactorHistogram') && (
+                    <Bar options={safetyFactorHistogramOptions} data={safetyFactorHistogram} />)}
+                {this.state.viewState.includes('ViewRemainingLifeHistogram') && (
+                    <Bar options={remainingLifeHistogramOptions} data={remainingLifeHistogram} />)}
             </div>
         </div>
     }
