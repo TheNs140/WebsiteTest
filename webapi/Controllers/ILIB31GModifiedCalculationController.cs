@@ -31,7 +31,7 @@ namespace webapi.Controllers
 
             for (int i = 0; i < allMetalLoss.Count(); i++)
             {
-                dataList.Add(new B31GInput(new Feature(), new MetalLoss(allMetalLoss[i].depth, allMetalLoss[i].length, allMetalLoss[i].width), new Pipe(input.OuterDiameter, allMetalLoss[i].wallThickness, input.YieldStrength), input.PressureOfInterest, input.SafetyFactor));
+                dataList.Add(new B31GInput(new Feature(), new MetalLoss(allMetalLoss[i].depth * allMetalLoss[i].wallThickness, allMetalLoss[i].length, allMetalLoss[i].width), new Pipe(input.OuterDiameter, allMetalLoss[i].wallThickness, input.YieldStrength), input.PressureOfInterest, input.SafetyFactor));
             }
 
             for (int i = 0; i < allMetalLoss.Count(); i++)
