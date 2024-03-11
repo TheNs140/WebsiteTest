@@ -487,6 +487,17 @@ class MainChartApplication extends React.Component {
         const remainingLifeHistogramOptions = {
             scales: {
                 y: {
+                    title: {
+                        display: true,
+                        text: 'Remaining Life Feature Count'
+                    },
+                    beginAtZero: true,
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Remaining Life Range (Years)'
+                    },
                     beginAtZero: true,
                 },
             },
@@ -577,6 +588,17 @@ class MainChartApplication extends React.Component {
         const safetyFactorHistogramOptions = {
             scales: {
                 y: {
+                    title: {
+                        display: true,
+                        text: 'Safety Factor Feature Count'
+                    },
+                    beginAtZero: true,
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Safety Factor Range'
+                    },
                     beginAtZero: true,
                 },
             },

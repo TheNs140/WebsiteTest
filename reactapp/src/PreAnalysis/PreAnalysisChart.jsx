@@ -114,7 +114,7 @@ class PreAnalysisChart extends React.Component {
 
         let ExternalMetalLossHistogramData = [];
         let InternalMetalLossHistogramData = [];
-        let MetalLossDepthHistogram = [];
+        let MetalLossDepthHistogram = [' < 1', '1 to 2', '2 to 3', ' > 3'];
         for (let i = 0; i < metalLoss[0].wallThickness; i++)
         {
             let TempExternalHistogramData = MetalLossDepthForHistogram.filter((metalloss => metalloss.CorrosionDepth == i && metalloss.featureRadial == 'External'));
@@ -123,15 +123,29 @@ class PreAnalysisChart extends React.Component {
             ExternalMetalLossHistogramData.push(TempExternalHistogramData.length);
             InternalMetalLossHistogramData.push(TempInternalHistogramData.length);
 
-
-
-            MetalLossDepthHistogram.push(i.toString());
         }
 
 
        const options = {
-            responsive: true,
-            plugins: {
+           responsive: true,
+           scales: {
+               y: {
+                   title: {
+                       display: true,
+                       text: 'Metal Loss Feature Count'
+                   },
+                   beginAtZero: true,
+               },
+               x: {
+                   title: {
+                       display: true,
+                       text: 'Metal Loss Depth Range (mm)'
+                   },
+                   beginAtZero: true,
+               },
+           },
+           plugins: {
+
                 legend: {
                     position: 'top',
                 },
@@ -208,6 +222,17 @@ class PreAnalysisChart extends React.Component {
         const OdometerVSCorrosionDepthOptions = {
             scales: {
                 y: {
+                    title: {
+                        display: true,
+                        text: 'Metal Loss Depth (%)'
+                    },
+                    beginAtZero: true,
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Odometer (m)'
+                    },
                     beginAtZero: true,
                 },
             },
@@ -225,7 +250,7 @@ class PreAnalysisChart extends React.Component {
             // Combine values as needed
             return {
                 CriticalDepth: CriticalDepth,
-                index: index + 5
+                index: index * 5
                 // Add more properties as needed
             };
         });
@@ -288,6 +313,18 @@ class PreAnalysisChart extends React.Component {
         const CorrosionDepthVSFeatureLengthOptions = {
             scales: {
                 y: {
+                    title: {
+                        display: true,
+                        text: 'Metal Loss Depth (mm)'
+                    },
+                    beginAtZero: true,
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Metal Loss Length (mm)'
+                    },
+                    max: 100,
                     beginAtZero: true,
                 },
             },
