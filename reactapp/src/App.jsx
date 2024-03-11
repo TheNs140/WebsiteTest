@@ -6,13 +6,12 @@ import TableComponent from './ILIAnalysis/Table';
 const DatabaseContext = React.createContext(null);
 function App() {
 
-    const [dataBaseName, setDataBaseName] = useState(null);
+    //These are all the states that are used in the app
+
     const [isCalculated, setIsCalculated] = useState(false);
     const [inputList, setInputList] = useState([]);
     const [metalLossList, setMetalLossList] = useState([]);
     const contextValue = {
-        dataBaseName,
-        setDataBaseName,
         inputList,
         setInputList,
         metalLossList,
@@ -22,6 +21,8 @@ function App() {
 
     };
 
+
+    //This is returning the rendered Router component
     return (
 
         <DatabaseContext.Provider value={contextValue} >

@@ -12,7 +12,6 @@ import MenuItem from '@mui/material/MenuItem';
 
 const FrontPage = () => {
     const navigate = useNavigate();
-    const { dataBaseName, setDataBaseName } = useContext(DatabaseContext);
     
     const { inputList, setInputList } = useContext(DatabaseContext);
     const { isCalculated, setIsCalculated } = useContext(DatabaseContext);
@@ -116,7 +115,7 @@ const FrontPage = () => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                database: dataBaseName,
+                database: selectedDatabase.database,
                 collection: collectionName
             })
         };
@@ -150,7 +149,6 @@ const FrontPage = () => {
             database: value,
         }));
 
-        setDataBaseName(value);
         fetchCollections();
     };
 

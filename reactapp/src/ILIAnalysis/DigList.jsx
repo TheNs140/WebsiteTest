@@ -27,6 +27,14 @@ class DigListTableComponent extends React.Component {
     }
 
 
+    autoSizeStrategy = {
+        type: 'fitCellContents',
+        defaultMinWidth: 100
+    };
+
+
+
+
     async componentDidMount() {
         if (this.state.isCalculated === true) {
             await this.setState({ MetalLoss: JSON.parse(sessionStorage.metalLoss) });
@@ -38,6 +46,8 @@ class DigListTableComponent extends React.Component {
     }
 
     async calculateFromMetalLossList() {
+
+        //This is for the B31G Calculation List
         let b31GInputs = {
             OuterDiameter: this.state.OuterDiameter,
             YieldStrength: this.state.YieldStrength,
@@ -55,6 +65,8 @@ class DigListTableComponent extends React.Component {
         };
 
 
+
+        //This is for the Leak Rupture Boundary List
         let leakRuptureBoundaryInputs = {
             OuterDiameter: this.state.OuterDiameter,
             FullSizedCVN: this.state.FullSizedCVN,
@@ -73,6 +85,8 @@ class DigListTableComponent extends React.Component {
         };
 
 
+
+        //This is for the B31G Critical Depth List
         let B31GCriticalDepthInputs = {
             OuterDiameter: this.state.OuterDiameter,
             FullSizedCVN: this.state.FullSizedCVN,
@@ -92,6 +106,8 @@ class DigListTableComponent extends React.Component {
         };
 
 
+
+        //This awaits for the fetch to be completed and then stores the response in the state
         const [response1, response2, response4] = await Promise.all([
             fetch('/ilib31gmodifiedcalculation', requestOptionsB31GFailurePressure),
             fetch('/ilifullleakrupturecalculation', requestOptionsLeakRupture),
@@ -103,6 +119,8 @@ class DigListTableComponent extends React.Component {
             response2.json(),
             response4.json(),
         ]);
+
+
         this.state.B31GModifiedFailurePressure = responseList;
         this.state.LeakRuptureBoundryList = responseList2;
         this.state.B31GCriticalDepth = responseList4;
@@ -110,13 +128,10 @@ class DigListTableComponent extends React.Component {
     }
 
 
-    autoSizeStrategy = {
-        type: 'fitCellContents',
-        defaultMinWidth: 100
-    };
-
-
     mapFunctions() {
+
+
+        //This maps all the values from all the lists and combines them into one list
         let FullChartValues = this.state.MetalLoss.map((metalLoss, index) => {
             let featureid = '';
             let odometer = '';
@@ -132,7 +147,7 @@ class DigListTableComponent extends React.Component {
             let length = '';
 
 
-
+            //This is the logic for which values will be included in the dig list
             if ((this.state.B31GModifiedFailurePressure[index].FailurePressure / this.state.PressureOfInterest) < this.state.SafetyFactor || (this.state.B31GCriticalDepth[index].CriticalDepth - (metalLoss.depth * metalLoss.wallThickness)) / 0.15 < 10 || metalLoss.depth > 0.7) {
                 featureid = metalLoss.featureID;
                 odometer = metalLoss.odometer;
@@ -169,6 +184,7 @@ class DigListTableComponent extends React.Component {
                 // Add more properties as needed
             };
         });
+        //We remove all the null values from the list because when an element is not qualified for the dig list it is turned into null
         const newData = FullChartValues.filter(element => element !== null)
         this.setState({ FullyMappedVariables: newData })
 
