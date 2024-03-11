@@ -6,11 +6,11 @@ using NCIntegrity.Common.Entities;
 using NCIntegrity.Domain.Entities;
 using webapi.Models;
 
-namespace webapi.Controllers
+namespace webapi.Controllers.Database
 {
     [ApiController]
     [Route("[controller]")]
-    public class MetalLossController:ControllerBase
+    public class MetalLossController : ControllerBase
     {
         public class MetalLossParameterBinding
         {

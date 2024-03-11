@@ -12,7 +12,7 @@ using System.Text.Json;
 using webapi.Models;
 using NCIntegrity.Common.Entities.Inputs;
 
-namespace webapi.Controllers
+namespace webapi.Controllers.Calculations
 {
     [ApiController]
     [Route("[controller]")]
@@ -22,12 +22,12 @@ namespace webapi.Controllers
         public IEnumerable<B31GCriticalDepthOutput> Post([FromBody] B31GCriticalDepthWebsiteInput input)
         {
 
-            List < B31GCriticalDepthOutput> results = new List<B31GCriticalDepthOutput>();
+            List<B31GCriticalDepthOutput> results = new List<B31GCriticalDepthOutput>();
             {
 
                 for (int i = 0; i < 500; i++)
                 {
-                    results.Add(B31GModified.CalculateCriticalDepth(new B31GInput(new Feature(), new MetalLoss( 0 , i , 0), new Pipe(input.OuterDiameter, input.WallThickness, input.YieldStrength), "", input.PressureOfInterest, input.SafetyFactor)));
+                    results.Add(B31GModified.CalculateCriticalDepth(new B31GInput(new Feature(), new MetalLoss(0, i, 0), new Pipe(input.OuterDiameter, input.WallThickness, input.YieldStrength), "", input.PressureOfInterest, input.SafetyFactor)));
 
                 }
 

@@ -11,14 +11,14 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using webapi.Models;
 
-namespace webapi.Controllers
+namespace webapi.Controllers.Calculations
 {
     [ApiController]
     [Route("[controller]")]
     public class LeakRuptureBoundryCalculationController : ControllerBase
     {
         [HttpPost]
-        public IEnumerable<LeakRuptureBoundryAnalysisOutput> Post([FromBody] LeakRuptureBoundaryWebsiteInput data )
+        public IEnumerable<LeakRuptureBoundryAnalysisOutput> Post([FromBody] LeakRuptureBoundaryWebsiteInput data)
         {
 
             List<LeakRuptureBoundryAnalysisOutput> results = new List<LeakRuptureBoundryAnalysisOutput>();
@@ -26,7 +26,7 @@ namespace webapi.Controllers
 
             {
 
-                for(int i = 5; i < 500; i++)
+                for (int i = 5; i < 500; i++)
                 {
                     results.Add(LeakRuptureBoundryAnalysis.Calculate(new LeakRuptureBoundryAnalysisInput(new Pipe(data.OuterDiameter, data.WallThickness, data.YieldStrength), new MetalLoss(0, i, 0), null, data.FullSizedCVN, data.PressureOfInterest)));
 
@@ -34,7 +34,7 @@ namespace webapi.Controllers
 
                 return results.ToArray();
             }
-                
+
         }
     }
 }

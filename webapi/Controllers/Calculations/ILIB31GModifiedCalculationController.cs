@@ -6,7 +6,7 @@ using webapi.Models;
 using NCIntegrity.Domain.Entities;
 using NCIntegrity.Common.Entities.Inputs;
 
-namespace webapi.Controllers
+namespace webapi.Controllers.Calculations
 {
 
     [ApiController]
@@ -17,7 +17,7 @@ namespace webapi.Controllers
         public class B31GParameterBinding
         {
             public B31GWebsiteInput inputs { get; set; }
-            public MetalLossParameterPassing[] data {get; set; }
+            public MetalLossParameterPassing[] data { get; set; }
         }
 
         [HttpPost]

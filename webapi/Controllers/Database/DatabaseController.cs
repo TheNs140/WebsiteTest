@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using System.Collections.Generic;
 
-namespace webapi.Controllers
+namespace webapi.Controllers.Database
 {
     [ApiController]
     [Route("[controller]")]

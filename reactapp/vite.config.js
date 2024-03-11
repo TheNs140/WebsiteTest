@@ -31,15 +31,6 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target: 'http://localhost:5077/',
-                secure: false
-            },
-            '^/randomCalculation': {
-                target: 'http://localhost:5077/',
-                secure: false
-
-            },
             '^/leakruptureboundrycalculation': {
                 target: 'http://localhost:5077/',
                 secure: false

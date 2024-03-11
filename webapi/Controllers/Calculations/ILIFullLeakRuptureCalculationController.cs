@@ -6,12 +6,12 @@ using webapi.Models;
 using NCIntegrity.Domain.Entities;
 
 
-namespace webapi.Controllers
+namespace webapi.Controllers.Calculations
 {
 
     [ApiController]
     [Route("[controller]")]
-    public class ILIFullLeakRuptureCalculationController:ControllerBase
+    public class ILIFullLeakRuptureCalculationController : ControllerBase
     {
 
         public class LeakRuptureBoundaryParameters
@@ -30,12 +30,12 @@ namespace webapi.Controllers
             List<LeakRuptureBoundryAnalysisInput> dataList = new List<LeakRuptureBoundryAnalysisInput>();
             List<LeakRuptureBoundryAnalysisOutput> results = new List<LeakRuptureBoundryAnalysisOutput>();
 
-            for(int i =0; i < allMetalLoss.Count(); i++)
+            for (int i = 0; i < allMetalLoss.Count(); i++)
             {
                 dataList.Add(new LeakRuptureBoundryAnalysisInput(new Pipe(input.OuterDiameter, allMetalLoss[i].wallThickness, input.YieldStrength), new MetalLoss(allMetalLoss[i].depth, allMetalLoss[i].length, allMetalLoss[i].width), null, input.FullSizedCVN, input.PressureOfInterest));
             }
 
-            for(int i = 0; i < allMetalLoss.Count(); i++ )
+            for (int i = 0; i < allMetalLoss.Count(); i++)
             {
                 results.Add(LeakRuptureBoundryAnalysis.Calculate(dataList[i]));
             }
@@ -44,6 +44,6 @@ namespace webapi.Controllers
         }
 
 
-            
+
     }
 }
