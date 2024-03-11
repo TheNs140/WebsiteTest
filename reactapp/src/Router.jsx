@@ -29,7 +29,7 @@ const Router = () => {
                     <Route path='/Table' element={<TableComponent />} />
                     <Route path='/Chart' element={<MainChartApplication />} />
                     <Route path='/DigList' element={<DigListTableComponent />} />
-                    <Route path='/PreAnalysisChart  `' element={<PreAnalysisChart/>} />
+                    <Route path='/PreAnalysisChart' element={<PreAnalysisChart/>} />
 
                 </>
             ) : (
