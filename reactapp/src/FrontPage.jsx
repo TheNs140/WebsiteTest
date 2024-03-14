@@ -17,7 +17,7 @@ const FrontPage = () => {
     const { isCalculated, setIsCalculated } = useContext(DatabaseContext);
 
     const [selectedDatabase, setSelectedDatabase] = useState({
-        database: ''
+        database: null
     });
 
     const [databases, setDatabases] = useState([]);
@@ -26,7 +26,7 @@ const FrontPage = () => {
     const [ collectionName, setCollectionName ] = useState('');
     const [collections, setCollections] = useState([]);
     const [selectedCollection, setSelectedCollection] = useState({
-        collection: ''
+        collection: null
     });
 
 
@@ -60,9 +60,7 @@ const FrontPage = () => {
 
 
 
-            if (data.length > 0) {
-                setSelectedDatabase(data[0]);
-            }
+
             setDatabases(data);
         } catch (error) {
             console.error('Error fetching data:', error);

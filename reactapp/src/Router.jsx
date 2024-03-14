@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import FrontPage from './FrontPage';
 import TableComponent from './ILIAnalysis/Table';
-import MainChartApplication from './ILIAnalysis/ILIAnalysisChart';
+import MainChartApplication from './ILIAnalysis/Charts/ILIAnalysisChart';
 import DigListTableComponent from './ILIAnalysis/DigList';
 import { DatabaseContext } from './App';
 import PreAnalysisChart from './PreAnalysis/PreAnalysisChart';

@@ -24,7 +24,6 @@ function App() {
 
     //This is returning the rendered Router component
     return (
-
         <DatabaseContext.Provider value={contextValue} >
             <Router />
          </DatabaseContext.Provider>

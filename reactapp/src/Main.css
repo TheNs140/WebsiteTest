@@ -51,7 +51,6 @@ h1{
 }
 
 #App {
-    padding-top: 3em;
     width: 100vw;
     margin: 0 auto;
     padding-left: 8em;
@@ -107,3 +106,8 @@ button {
     button:hover {
         background-color: #45a049;
     }
+img {
+    width: 9%;
+    display: block;
+    height: auto;
+}

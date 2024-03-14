@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 const Sidebar = () => {
 
     return(
-        <Menu pageWrapId={'App'} outerContainerId={'outer-container'} >
+        <Menu right pageWrapId={'App'} outerContainerId={'outer-container'} >
             <Stack spacing={1} alignItems="center">
                 <Link to='/' className="nav-link">
                    <Button variant="text">
