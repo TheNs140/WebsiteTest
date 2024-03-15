@@ -143,11 +143,9 @@ const FrontPage = () => {
         const { value } = event.target;
 
         setSelectedDatabase((prevOptions) => ({
-            ...prevOptions,
             database: value,
         }));
 
-        fetchCollections();
     };
 
     const handleCollectionChange = (event) => {

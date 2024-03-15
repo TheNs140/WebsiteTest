@@ -39,14 +39,7 @@ function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailur
 
     const handlecheckboxchange = (e, value) => {
         // Update the CheckBoxState in state directly
-        this.setState({ CheckBoxState: value }, () => {
-            // Use functional update to toggle each checkbox state based on the new value
-            this.state.CheckBoxState.forEach(totogglechange => {
-                this.setState(prevState => ({
-                    [totogglechange]: !prevState[totogglechange]
-                }));
-            });
-        });
+        setCheckBoxState(value)
     }
 
     const plugin = {
