@@ -12,10 +12,36 @@ import { Bar, Scatter } from 'react-chartjs-2';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import CheckIcon from '@mui/icons-material/Check';
 import { saveAs } from 'file-saver'
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
+import '../Styling/ILIAnalysisStyling.css';
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
+const DownloadSelection = [
+    'LRB and Pf B31G',
+    'Pf B31G',
+    'Remaining Life',
+    'Sf Histogram',
+    'Remaining Life Histogram'
+
+]
 
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Title);
@@ -31,15 +57,45 @@ function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailur
     }
     const saveCanvas = () => {
         //save to png
-        const canvasSave = document.getElementById('LeakRuptureBoundaryListWithB31GFailurePressures');
-        canvasSave.toBlob(function (blob) {
-            saveAs(blob, "testing.png")
-        })
+
+        if (CheckBoxState.includes('LRB and Pf B31G')) {
+            const canvasSave = document.getElementById('LRB and Pf B31G');
+            canvasSave.toBlob(function (blob) {
+                saveAs(blob, "LRB and Pf B31G.png")
+            })
+        }
+
+        if (CheckBoxState.includes('Pf B31G')) {
+            const canvasSave = document.getElementById('Pf B31G');
+            canvasSave.toBlob(function (blob) {
+                saveAs(blob, "PfB31G.png")
+            })
+        }
+
+        if (CheckBoxState.includes('Remaining Life')) {
+            const canvasSave = document.getElementById('Remaining Life');
+            canvasSave.toBlob(function (blob) {
+                saveAs(blob, "RemainingLife.png")
+            })
+        }
+
+        if (CheckBoxState.includes('Sf Histogram')) {
+            const canvasSave = document.getElementById('Sf Histogram');
+            canvasSave.toBlob(function (blob) {
+                saveAs(blob, "SfHistogram.png")
+            })
+        }
     }
 
-    const handlecheckboxchange = (e, value) => {
+    const handlecheckboxchange = (event) => {
         // Update the CheckBoxState in state directly
-        setCheckBoxState(value)
+        const {
+            target: { value },
+        } = event;
+        setCheckBoxState(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value,
+        );
     }
 
     const plugin = {
@@ -526,19 +582,19 @@ function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailur
         <div>
         <div className={"ButtonandSelect"}>
             <ToggleButtonGroup value={viewState} onChange={handleToggleChange}>
-                <ToggleButton value="ViewRupturePressureLineWithB31GFailurePressure">
+                    <ToggleButton value="LRB and Pf B31G">
                     <Typography variant="subtitle1">LRB and Pf B31G</Typography>
                 </ToggleButton>
 
-                <ToggleButton value="ViewB31GFailurePressure">
+                    <ToggleButton value="Pf B31G">
                     <Typography variant="subtitle1">Pf B31G</Typography>
                 </ToggleButton>
 
-                <ToggleButton value="ViewRemainingLife">
+                    <ToggleButton value="Remaining Life">
                     <Typography variant="subtitle1">Remaining Life</Typography>
                 </ToggleButton>
 
-                <ToggleButton value="ViewSafetyFactorHistogram">
+                    <ToggleButton value="Sf Histogram">
                     <Typography variant="subtitle1">Sf Histogram</Typography>
                 </ToggleButton>
 
@@ -549,49 +605,49 @@ function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailur
             </ToggleButtonGroup>
 
         </div>
-
-        <a onClick={saveCanvas}>Download as PNG</a>
         <div className={"chart-and-selector-container"}>
-
-            <ToggleButtonGroup orientation="vertical" value={CheckBoxState} onChange={handlecheckboxchange}>
-
-                <ToggleButton value="ViewB31GFailurePressure">
-                    <CheckIcon />
-                </ToggleButton>
-
-                <ToggleButton value="ViewRemainingLife">
-                    <CheckIcon />
-                </ToggleButton>
-
-                <ToggleButton value="ViewSafetyFactorHistogram">
-                    <CheckIcon />
-                </ToggleButton>
-
-                <ToggleButton value="ViewRemainingLifeHistogram">
-                    <CheckIcon />
-                </ToggleButton>
-
-            </ToggleButtonGroup>
-
+        <div className="selector-container">
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel id="demo-multiple-checkbox-label">Select Charts to Download</InputLabel>
+                <Select
+                  labelId="demo-multiple-checkbox-label"
+                  id="demo-multiple-checkbox"
+                  multiple
+                  value={CheckBoxState}
+                  onChange={handlecheckboxchange}
+                  input={<OutlinedInput label="Select Charts to Download" />}
+                  renderValue={(selected) => selected.join(', ')}
+                  MenuProps={MenuProps}
+                    >
+                        {viewState.map((name) => (
+                    <MenuItem key={name} value={name}>
+                      <Checkbox checked={CheckBoxState.indexOf(name) > -1} />
+                      <ListItemText primary={name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+          </FormControl>
+          <Button variant="outlined" onClick={saveCanvas}>Download</Button>
+          </div>
 
             <div className={"chart-container"} style={{ display: "inline-flex", flexDirection: "column", gap: '12vh', width: "80%" }}>
 
-                {viewState.includes('ViewRupturePressureLineWithB31GFailurePressure') && (
-                    <Scatter id="LeakRuptureBoundaryListWithB31GFailurePressures" options={LeakRuptureBoundaryListWithB31GFailurePressuresOptions} data={LeakRuptureBoundaryListWithB31GFailurePressuresData} />
+                    {viewState.includes('LRB and Pf B31G') && (
+                <Scatter id="LRB and Pf B31G" options={LeakRuptureBoundaryListWithB31GFailurePressuresOptions} data={LeakRuptureBoundaryListWithB31GFailurePressuresData} />
                 )}
-                {viewState.includes('ViewB31GFailurePressure') && (
-                    <Scatter options={OdometerVSB31GFailurePressureOptions} data={OdometerVSB31GFailurePressure} />
+                    {viewState.includes('Pf B31G') && (
+                <Scatter id= 'Pf B31G' options={OdometerVSB31GFailurePressureOptions} data={OdometerVSB31GFailurePressure} />
                 )}
-                {viewState.includes('ViewRemainingLife') && (
-                    <Scatter options={RemainingLifeCalculationVSOdometerOptions} data={RemainingLifeCalculationVSOdometer} />
+                {viewState.includes('Remaining Life') && (
+                <Scatter id= 'Remaining Life' options={RemainingLifeCalculationVSOdometerOptions} data={RemainingLifeCalculationVSOdometer} />
                 )}
-                {viewState.includes('ViewSafetyFactorHistogram') && (
-                    <Bar options={safetyFactorHistogramOptions} data={safetyFactorHistogram} />)}
+                {viewState.includes('Sf Histogram') && (
+                        <Bar id= 'Sf Histogram' options={safetyFactorHistogramOptions} data={safetyFactorHistogram} />)}
                 {viewState.includes('ViewRemainingLifeHistogram') && (
-                    <Bar options={RemainingLifeHistogramOptions} data={RemainingLifeHistogram} />)}
+                <Bar id= 'ViewRemainingLifeHistogram' options={RemainingLifeHistogramOptions} data={RemainingLifeHistogram} />)}
             </div>
-
         </div>
+
     </div>
     );
 }

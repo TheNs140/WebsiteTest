@@ -21,7 +21,6 @@ class MainChartApplication extends React.Component {
                 WallThickness: '',
                 SafetyFactor: '',
             },
-            ViewRupturePressureLineWithB31GFailurePressure: false,
             LeakRuptureBoundryList: [],
             B31GModifiedFailurePressure: [],
             GenericLeakRuptureBoundaryCalculation: [],
