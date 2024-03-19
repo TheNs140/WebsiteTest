@@ -1,0 +1,37 @@
+.ag-header-cell-label {
+    justify-content: center;
+}
+
+.ag-row .ag-cell {
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center;
+}
+
+.chart-and-selector-container{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.ButtonandSelect {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.MuiFormControl-root {
+    padding: 0.5em !important;
+    margin: 0 !important;
+}
+.MuiButton-root{
+    margin: 0.5em !important;
+}
+.selector-container
+{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    margin: 1em;
+}

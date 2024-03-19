@@ -1,9 +1,12 @@
 import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
-import "./Styling/ILIAnalysisStyling.css";
+import "../Styling/ILIAnalysisStyling.css";
+import "../Styling/TableStyling.css";
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { DatabaseContext } from '../App';
+import "../Styling/ILIAnalysisStyling.css";
+import { DatabaseContext } from '../../App';
+import Button from '@mui/material/Button';
 
 class DigListTableComponent extends React.Component {
 
@@ -23,7 +26,8 @@ class DigListTableComponent extends React.Component {
             B31GCriticalDepth: [],
             FullyMappedVariables: []
         };
-
+        this.Ref = React.createRef();
+        this.saveTable = this.saveTable.bind(this);
     }
 
 
@@ -34,6 +38,9 @@ class DigListTableComponent extends React.Component {
 
 
 
+    saveTable() {
+        this.Ref.current.api.exportDataAsCsv();
+    }
 
     async componentDidMount() {
         if (this.state.isCalculated === true) {
@@ -262,11 +269,14 @@ class DigListTableComponent extends React.Component {
                     }}
 
                 </DatabaseContext.Consumer>
+                <Button variant="outlined" onClick={this.saveTable}>Download</Button>
+
                 {/* The AG Grid component */}
                 <AgGridReact pagination={true}
                     autoSizeStrategy={this.autoSizeStrategy}
                     rowData={this.state.FullyMappedVariables}
-                    columnDefs={this.collectiveColDef} />
+                    columnDefs={this.collectiveColDef}
+                    ref={this.Ref}/>
             </div>
         )
     };

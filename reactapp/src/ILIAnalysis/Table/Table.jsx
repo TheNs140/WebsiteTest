@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
-import "./Styling/ILIAnalysisStyling.css";
+import "../Styling/ILIAnalysisStyling.css";
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { DatabaseContext } from '../App';
-
+import { DatabaseContext } from '../../App';
+import Button from '@mui/material/Button';
 class TableComponent extends React.Component {
 
     constructor(props) {
@@ -24,7 +24,14 @@ class TableComponent extends React.Component {
             B31GCriticalDepth: [],
             FullyMappedVariables: []
         };
+        this.Ref = React.createRef();
+        this.saveTable = this.saveTable.bind(this);
 
+    }
+
+
+    saveTable() {
+        this.Ref.current.api.exportDataAsCsv();
     }
 
 
@@ -219,25 +226,31 @@ class TableComponent extends React.Component {
 
     render() {
         return (
-            <div className="ag-theme-quartz" style={{ justifyContent: 'center', height: 850 }}>
-            <h1>ILI Analysis Table</h1>
-               <DatabaseContext.Consumer>
-                    {({ inputList, isCalculated }) => {
-                            this.state.OuterDiameter = inputList.OuterDiameter,
-                            this.state.YieldStrength = inputList.YieldStrength,
-                            this.state.FullSizedCVN = inputList.FullSizedCVN,
-                            this.state.PressureOfInterest = inputList.PressureOfInterest,
-                            this.state.WallThickness = inputList.WallThickness,
-                            this.state.SafetyFactor = inputList.SafetyFactor
-                            this.state.isCalculated = isCalculated;                    
-                    }}
+            <div className="grid-sizing">
+                <h1>ILI Analysis Table</h1>
+                   <DatabaseContext.Consumer>
+                        {({ inputList, isCalculated }) => {
+                                this.state.OuterDiameter = inputList.OuterDiameter,
+                                this.state.YieldStrength = inputList.YieldStrength,
+                                this.state.FullSizedCVN = inputList.FullSizedCVN,
+                                this.state.PressureOfInterest = inputList.PressureOfInterest,
+                                this.state.WallThickness = inputList.WallThickness,
+                                this.state.SafetyFactor = inputList.SafetyFactor
+                                this.state.isCalculated = isCalculated;                    
+                        }}
                     
-                </DatabaseContext.Consumer>
-            {/* The AG Grid component */}
-            <AgGridReact pagination={true}
-                autoSizeStrategy={this.autoSizeStrategy}
-                rowData={this.state.FullyMappedVariables}
-                columnDefs={this.collectiveColDef} />
+                    </DatabaseContext.Consumer>
+                    {/* The AG Grid component */}
+                    <Button variant="outlined" onClick={this.saveTable}>Download</Button>
+                <div className="ag-theme-quartz" style={{ justifyContent: 'center', height: 850 }}>
+
+                    <AgGridReact pagination={true}
+                        autoSizeStrategy={this.autoSizeStrategy}
+                        rowData={this.state.FullyMappedVariables}
+                        columnDefs={this.collectiveColDef}
+                        ref={this.Ref}
+                    />
+                </div>
             </div>
         )
     };

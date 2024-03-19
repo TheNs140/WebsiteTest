@@ -31,7 +31,6 @@ class MainChartApplication extends React.Component {
         };
     }
 
-
     async componentDidMount() {
         await this.calculateFromMetalLossList();
 
@@ -49,8 +48,6 @@ class MainChartApplication extends React.Component {
         )
 
     }
-
-
 
     async calculateFromMetalLossList() {
 

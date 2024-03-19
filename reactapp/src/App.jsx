@@ -1,6 +1,5 @@
 import React, { Component, useState, useContext } from 'react';
 import Router from './Router';
-import TableComponent from './ILIAnalysis/Table';
 
 
 const DatabaseContext = React.createContext(null);

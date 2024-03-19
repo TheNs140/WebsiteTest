@@ -11,6 +11,29 @@ import {
 import { Bar, Scatter } from 'react-chartjs-2';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
+import { saveAs } from 'file-saver'
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
+import './Styling/PreAnalysisStyling.css';
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
 
 ChartJS.register(
     CategoryScale,
@@ -24,11 +47,50 @@ ChartJS.register(
 function PreAnalysisGraphGeneration({ metalLoss, GenericB31GCriticalDepth, InputList }) {
 
     const [viewState, setViewState] = React.useState([]);
+    const [CheckBoxState, setCheckBoxState] = React.useState([]);
+
+
 
 
     const handleToggleChange = (e, value) => {
         setViewState(value)
 
+    }
+
+    const saveCanvas = () => {
+        //save to png
+
+        if (CheckBoxState.includes('MetalLossHistogram')) {
+            const canvasSave = document.getElementById('MetalLossHistogram');
+            canvasSave.toBlob(function (blob) {
+                saveAs(blob, "MetalLossHistogram.png")
+            })
+        }
+
+        if (CheckBoxState.includes('ViewOdometerVSCorrosionDepth')) {
+            const canvasSave = document.getElementById('ViewOdometerVSCorrosionDepth');
+            canvasSave.toBlob(function (blob) {
+                saveAs(blob, "ViewOdometerVSCorrosionDepth.png")
+            })
+        }
+
+        if (CheckBoxState.includes('ViewGenericB31GCriticalDepth')) {
+            const canvasSave = document.getElementById('ViewGenericB31GCriticalDepth');
+            canvasSave.toBlob(function (blob) {
+                saveAs(blob, "ViewGenericB31GCriticalDepth.png")
+            })
+        }
+    }
+
+    const handlecheckboxchange = (event) => {
+        // Update the CheckBoxState in state directly
+        const {
+            target: { value },
+        } = event;
+        setCheckBoxState(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value,
+        );
     }
 
     //This is generating the list for CorrosionDepthListWithOdometer
@@ -279,14 +341,40 @@ function PreAnalysisGraphGeneration({ metalLoss, GenericB31GCriticalDepth, Input
                 </ToggleButton>
             </ToggleButtonGroup>
 
+            <div className={"chart-and-selector-container"}>
+                <div className="selector-container">
+                    <FormControl sx={{ m: 1, width: 300 }}>
+                        <InputLabel id="demo-multiple-checkbox-label">Select Charts to Download</InputLabel>
+                        <Select
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            value={CheckBoxState}
+                            onChange={handlecheckboxchange}
+                            input={<OutlinedInput label="Select Charts to Download" />}
+                            renderValue={(selected) => selected.join(', ')}
+                            MenuProps={MenuProps}
+                        >
+                            {viewState.map((name) => (
+                                <MenuItem key={name} value={name}>
+                                    <Checkbox checked={CheckBoxState.indexOf(name) > -1} />
+                                    <ListItemText primary={name} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <Button variant="outlined" onClick={saveCanvas}>Download</Button>
+                </div>
+
             <div className={"chart-container"} style={{ display: "inline-flex", flexDirection: "column", gap: '12vh', width: "80%" }}>
                 {viewState.includes('MetalLossHistogram') && (
-                    <Bar options={options} data={data} />)}
+                    <Bar id='MetalLossHistogram' options={options} data={data} />)}
                 {viewState.includes('ViewOdometerVSCorrosionDepth') && (
-                    <Scatter options={OdometerVSCorrosionDepthOptions} data={OdometerVSCorrosionDepth} />)}
+                    <Scatter id='ViewOdometerVSCorrosionDepth' options={OdometerVSCorrosionDepthOptions} data={OdometerVSCorrosionDepth} />)}
                 {viewState.includes('ViewGenericB31GCriticalDepth') && (
-                    <Scatter options={CorrosionDepthVSFeatureLengthOptions} data={CorrosionDepthVSFeatureLength} />)}
+                    <Scatter id='ViewGenericB31GCriticalDepth' options={CorrosionDepthVSFeatureLengthOptions} data={CorrosionDepthVSFeatureLength} />)}
 
+                </div>
             </div>
         </div>
     );
