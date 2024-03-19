@@ -7,7 +7,7 @@ import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-
+import "./FrontPageStyling.css";
 
 
 const FrontPage = () => {
@@ -204,28 +204,54 @@ const FrontPage = () => {
             <h1>Pipeline Inputs</h1>
 
 
+            <div className={"input-form" }>
+                <form onSubmit={handleSubmission}>
+                    <label htmlFor="OuterDiameter">Diameter (mm)</label>
+                    <input type="text" id="OuterDiameter" name="OuterDiameter" value={inputValues.OuterDiameter} onChange={handleInputChange} />
 
-            <form onSubmit={handleSubmission}>
-                <label htmlFor="OuterDiameter">Diameter (mm)</label>
-                <input type="text" id="OuterDiameter" name="OuterDiameter" value={inputValues.OuterDiameter} onChange={handleInputChange} />
+                    <label htmlFor="WallThickness">Wall Thickness (mm)</label>
+                    <input type="text" id="WallThickness" name="WallThickness" value={inputValues.WallThickness} onChange={handleInputChange} />
 
-                <label htmlFor="WallThickness">Wall Thickness (mm)</label>
-                <input type="text" id="WallThickness" name="WallThickness" value={inputValues.WallThickness} onChange={handleInputChange} />
+                    <label htmlFor="YieldStrength">Grade (MPa)</label>
+                    <input type="text" id="YieldStrength" name="YieldStrength" value={inputValues.YieldStrength} onChange={handleInputChange} />
 
-                <label htmlFor="YieldStrength">Grade (MPa)</label>
-                <input type="text" id="YieldStrength" name="YieldStrength" value={inputValues.YieldStrength} onChange={handleInputChange} />
+                    <label htmlFor="FullSizedCVN">CVN Toughness (J)</label>
+                    <input type="text" id="FullSizedCVN" name="FullSizedCVN" value={inputValues.FullSizedCVN} onChange={handleInputChange} />
 
-                <label htmlFor="FullSizedCVN">CVN Toughness (J)</label>
-                <input type="text" id="FullSizedCVN" name="FullSizedCVN" value={inputValues.FullSizedCVN} onChange={handleInputChange} />
+                    <label htmlFor="PressureOfInterest">MOP (kPa)</label>
+                    <input type="text" id="PressureOfInterest" name="PressureOfInterest" value={inputValues.PressureOfInterest} onChange={handleInputChange} />
 
-                <label htmlFor="PressureOfInterest">MOP (kPa)</label>
-                <input type="text" id="PressureOfInterest" name="PressureOfInterest" value={inputValues.PressureOfInterest} onChange={handleInputChange} />
+                    <label htmlFor="SafetyFactor">Safety Factor</label>
+                    <input type="text" id="SafetyFactor" name="SafetyFactor" value={inputValues.SafetyFactor} onChange={handleInputChange} />
 
-                <label htmlFor="SafetyFactor">Safety Factor</label>
-                <input type="text" id="SafetyFactor" name="SafetyFactor" value={inputValues.SafetyFactor} onChange={handleInputChange} />
+                    <button type="submit">Calculate</button>
+                </form>
 
-                <button type="submit">Calculate</button>
-            </form>
+                <form onSubmit={handleSubmission}>
+                    <label htmlFor="OuterDiameter">Internal Corrosion Rate (mm/yr)</label>
+                    <input type="text" id="OuterDiameter" name="OuterDiameter" value={inputValues.OuterDiameter} onChange={handleInputChange} />
+
+                    <label htmlFor="WallThickness">External Corrosion Rate (mm/yr)</label>
+                    <input type="text" id="WallThickness" name="WallThickness" value={inputValues.WallThickness} onChange={handleInputChange} />
+
+                    <label htmlFor="YieldStrength">Stress Corrosion Cracking Rate (mm/yr)</label>
+                    <input type="text" id="YieldStrength" name="YieldStrength" value={inputValues.YieldStrength} onChange={handleInputChange} />
+
+                    <label htmlFor="FullSizedCVN">Paris Law Coefficient (Pa,sqr(m))</label>
+                    <input type="text" id="FullSizedCVN" name="FullSizedCVN" value={inputValues.FullSizedCVN} onChange={handleInputChange} />
+
+                    <label htmlFor="PressureOfInterest">Paris Law Exponent</label>
+                    <input type="text" id="PressureOfInterest" name="PressureOfInterest" value={inputValues.PressureOfInterest} onChange={handleInputChange} />
+
+                    <label htmlFor="SafetyFactor">Cyclic Index (cycles/year)</label>
+                    <input type="text" id="SafetyFactor" name="SafetyFactor" value={inputValues.SafetyFactor} onChange={handleInputChange} />
+
+                    <label htmlFor="SafetyFactor">Basis of Cyclic Index (%SMYS)</label>
+                    <input type="text" id="SafetyFactor" name="SafetyFactor" value={inputValues.SafetyFactor} onChange={handleInputChange} />
+
+                    <button type="submit">Calculate</button>
+                </form>
+            </div>
     </div>
   );
 };

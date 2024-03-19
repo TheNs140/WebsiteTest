@@ -108,3 +108,7 @@ img {
     display: block;
     height: auto;
 }
+.image-link
+{
+    display: contents;
+}
