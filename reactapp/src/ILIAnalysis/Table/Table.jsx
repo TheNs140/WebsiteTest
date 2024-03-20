@@ -16,6 +16,10 @@ class TableComponent extends React.Component {
             PressureOfInterest: '',
             WallThickness: '',
             SafetyFactor: '',
+            InputAnalysisList: {
+                InternalCorrosionRate: '',
+                ExternalCorrosionRate: '',
+            },
             isCalculated: false,
             LeakRuptureBoundryList: [],
             B31GModifiedFailurePressure: [],
@@ -138,7 +142,11 @@ class TableComponent extends React.Component {
             let wallthickness = metalLoss.wallThickness;
             let safetyfactor = this.state.B31GModifiedFailurePressure[index].FailurePressure / this.state.PressureOfInterest;
             let failurepressure = this.state.B31GModifiedFailurePressure[index].FailurePressure;
-            let remainingLife = (this.state.B31GCriticalDepth[index].CriticalDepth - (metalLoss.depth * metalLoss.wallThickness)) / 0.15;
+            let remainingLife = "";
+            if (metalLoss.featureRadial == "Internal")
+                remainingLife = (this.state.B31GCriticalDepth[index].CriticalDepth - (metalLoss.depth * metalLoss.wallThickness)) / this.state.InputAnalysisList.InternalCorrosionRate;
+            if (metalLoss.featureRadial == "External")
+                remainingLife = (this.state.B31GCriticalDepth[index].CriticalDepth - (metalLoss.depth * metalLoss.wallThickness)) / this.state.InputAnalysisList.ExternalCorrosionRate;
             let safeoperatingpressure = this.state.B31GModifiedFailurePressure[index].SafeOperatingPressure;
             let mode = this.state.B31GModifiedFailurePressure[index].FailurePressure > this.state.LeakRuptureBoundryList.PredictedRupturePressure ? "Rupture" : "Leak";
             let criticalDepth = this.state.B31GCriticalDepth[index].CriticalDepth;
@@ -226,22 +234,26 @@ class TableComponent extends React.Component {
 
     render() {
         return (
+            <div>
+            <h1>ILI Analysis Table</h1>
+
             <div className="grid-sizing">
-                <h1>ILI Analysis Table</h1>
-                   <DatabaseContext.Consumer>
-                        {({ inputList, isCalculated }) => {
-                                this.state.OuterDiameter = inputList.OuterDiameter,
-                                this.state.YieldStrength = inputList.YieldStrength,
-                                this.state.FullSizedCVN = inputList.FullSizedCVN,
-                                this.state.PressureOfInterest = inputList.PressureOfInterest,
-                                this.state.WallThickness = inputList.WallThickness,
-                                this.state.SafetyFactor = inputList.SafetyFactor
-                                this.state.isCalculated = isCalculated;                    
-                        }}
+                <DatabaseContext.Consumer>
+                {({ inputList, analysisInputList, isCalculated }) => {
+                            this.state.OuterDiameter = inputList.OuterDiameter,
+                            this.state.YieldStrength = inputList.YieldStrength,
+                            this.state.FullSizedCVN = inputList.FullSizedCVN,
+                            this.state.PressureOfInterest = inputList.PressureOfInterest,
+                            this.state.WallThickness = inputList.WallThickness,
+                            this.state.SafetyFactor = inputList.SafetyFactor
+                            this.state.isCalculated = isCalculated;     
+                            this.state.InputAnalysisList.InternalCorrosionRate = analysisInputList.InternalCorrosionRate,
+                            this.state.InputAnalysisList.ExternalCorrosionRate = analysisInputList.ExternalCorrosionRate
+                    }}
                     
-                    </DatabaseContext.Consumer>
-                    {/* The AG Grid component */}
-                    <Button variant="outlined" onClick={this.saveTable}>Download</Button>
+                </DatabaseContext.Consumer>
+                {/* The AG Grid component */}
+                <Button variant="outlined" onClick={this.saveTable}>Download</Button>
                 <div className="ag-theme-quartz" style={{ justifyContent: 'center', height: 850 }}>
 
                     <AgGridReact pagination={true}
@@ -250,6 +262,7 @@ class TableComponent extends React.Component {
                         columnDefs={this.collectiveColDef}
                         ref={this.Ref}
                     />
+                </div>
                 </div>
             </div>
         )

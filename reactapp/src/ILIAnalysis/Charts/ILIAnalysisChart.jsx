@@ -21,6 +21,10 @@ class MainChartApplication extends React.Component {
                 WallThickness: '',
                 SafetyFactor: '',
             },
+            InputAnalysisList: {
+                InternalCorrosionRate: '',
+                ExternalCorrosionRate: '',
+            },
             LeakRuptureBoundryList: [],
             B31GModifiedFailurePressure: [],
             GenericLeakRuptureBoundaryCalculation: [],
@@ -159,21 +163,21 @@ class MainChartApplication extends React.Component {
 
     render() {
         return (
-
             <div>
                 <DatabaseContext.Consumer>
-                    {({ inputList, isCalculated }) => {
+                    {({ inputList, analysisInputList, isCalculated }) => {
                         this.state.InputList.OuterDiameter = inputList.OuterDiameter,
                         this.state.InputList.YieldStrength = inputList.YieldStrength,
                         this.state.InputList.FullSizedCVN = inputList.FullSizedCVN,
                         this.state.InputList.PressureOfInterest = inputList.PressureOfInterest,
                         this.state.InputList.WallThickness = inputList.WallThickness,
                         this.state.InputList.SafetyFactor = inputList.SafetyFactor,
-                        this.state.isCalculated = isCalculated
-
+                        this.state.isCalculated = isCalculated,
+                        this.state.InputAnalysisList.InternalCorrosionRate = analysisInputList.InternalCorrosionRate,
+                        this.state.InputAnalysisList.ExternalCorrosionRate = analysisInputList.ExternalCorrosionRate
                     }}
                 </DatabaseContext.Consumer>
-                {this.state.isCalculated ? <ILIAnalysisGraphGeneration LeakRuptureBoundryList={this.state.GenericLeakRuptureBoundaryCalculation} B31GModifiedFailurePressure={this.state.B31GModifiedFailurePressure} metalLoss={this.state.MetalLoss} B31GCriticalDepthCalculations={this.state.B31GCriticalDepth} InputList={this.state.InputList} /> : ''}
+                {this.state.isCalculated ? <ILIAnalysisGraphGeneration LeakRuptureBoundryList={this.state.GenericLeakRuptureBoundaryCalculation} B31GModifiedFailurePressure={this.state.B31GModifiedFailurePressure} metalLoss={this.state.MetalLoss} B31GCriticalDepthCalculations={this.state.B31GCriticalDepth} InputList={this.state.InputList} InputAnalysisList={this.state.InputAnalysisList} /> : ''}
             </div>
         )
     }

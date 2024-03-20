@@ -19,6 +19,10 @@ class DigListTableComponent extends React.Component {
             PressureOfInterest: '',
             WallThickness: '',
             SafetyFactor: '',
+            InputAnalysisList: {
+                InternalCorrosionRate: '',
+                ExternalCorrosionRate: '',
+            },
             LeakRuptureBoundryList: [],
             B31GModifiedFailurePressure: [],
             MetalLoss: JSON.parse(sessionStorage.metalLoss),
@@ -165,7 +169,10 @@ class DigListTableComponent extends React.Component {
                 wallthickness = metalLoss.wallThickness;
                 safetyfactor = this.state.B31GModifiedFailurePressure[index].FailurePressure / this.state.PressureOfInterest;
                 failurepressure = this.state.B31GModifiedFailurePressure[index].FailurePressure;
-                remainingLife = (this.state.B31GCriticalDepth[index].CriticalDepth - (metalLoss.depth * metalLoss.wallThickness)) / 0.15;
+                if (metalLoss.featureRadial == "Internal")
+                    remainingLife = (this.state.B31GCriticalDepth[index].CriticalDepth - (metalLoss.depth * metalLoss.wallThickness)) / this.state.InputAnalysisList.InternalCorrosionRate;
+                if (metalLoss.featureRadial == "External")
+                    remainingLife = (this.state.B31GCriticalDepth[index].CriticalDepth - (metalLoss.depth * metalLoss.wallThickness)) / this.state.InputAnalysisList.ExternalCorrosionRate;
                 safeoperatingpressure = this.state.B31GModifiedFailurePressure[index].SafeOperatingPressure;
                 mode = this.state.B31GModifiedFailurePressure[index].FailurePressure > this.state.LeakRuptureBoundryList.PredictedRupturePressure ? "Rupture" : "Leak";
             }
@@ -258,7 +265,7 @@ class DigListTableComponent extends React.Component {
                 Dig List
                 </h1>
                 <DatabaseContext.Consumer>
-                    {({ inputList, isCalculated }) => {
+                    {({ inputList, analysisInputList, isCalculated }) => {
                         this.state.OuterDiameter = inputList.OuterDiameter,
                             this.state.YieldStrength = inputList.YieldStrength,
                             this.state.FullSizedCVN = inputList.FullSizedCVN,
@@ -266,6 +273,9 @@ class DigListTableComponent extends React.Component {
                             this.state.WallThickness = inputList.WallThickness,
                             this.state.SafetyFactor = inputList.SafetyFactor,
                             this.state.isCalculated = isCalculated
+                            this.state.InputAnalysisList.InternalCorrosionRate = analysisInputList.InternalCorrosionRate,
+                            this.state.InputAnalysisList.ExternalCorrosionRate = analysisInputList.ExternalCorrosionRate
+
                     }}
 
                 </DatabaseContext.Consumer>

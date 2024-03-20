@@ -9,6 +9,7 @@ function App() {
 
     const [isCalculated, setIsCalculated] = useState(false);
     const [inputList, setInputList] = useState([]);
+    const [ analysisInputList, setAnalysisInputList ] = useState([]);
     const [metalLossList, setMetalLossList] = useState([]);
     const contextValue = {
         inputList,
@@ -16,7 +17,9 @@ function App() {
         metalLossList,
         setMetalLossList,
         isCalculated,
-        setIsCalculated
+        setIsCalculated,
+        analysisInputList,
+        setAnalysisInputList
 
     };
 

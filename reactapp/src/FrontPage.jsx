@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DatabaseContext } from './App'
-import { Dropdown } from 'semantic-ui-react'
 import { useNavigate } from "react-router-dom";
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import "./FrontPageStyling.css";
@@ -14,6 +12,7 @@ const FrontPage = () => {
     const navigate = useNavigate();
     
     const { inputList, setInputList } = useContext(DatabaseContext);
+    const { analysisInputList, setAnalysisInputList } = useContext(DatabaseContext);
     const { isCalculated, setIsCalculated } = useContext(DatabaseContext);
 
     const [selectedDatabase, setSelectedDatabase] = useState({
@@ -40,6 +39,16 @@ const FrontPage = () => {
         SafetyFactor: '',
     });
 
+    const [analysisInput, setAnalysisInput] = useState({
+        InternalCorrosionRate: '',
+        ExternalCorrosionRate: '',
+        StressCorrosionCrackingRate: '',
+        ParisLawCoefficient: '',
+        ParisLawExponent: '',
+        CyclicIndex: '',
+        BasisOfCyclicIndex: '',
+
+    });
 
     useEffect(() => {
         fetchData();
@@ -102,6 +111,7 @@ const FrontPage = () => {
 
         e.preventDefault();
         setInputList(inputValues);
+        setAnalysisInputList(analysisInput);
         await getMetalLossFeatures();
 
     }
@@ -139,6 +149,15 @@ const FrontPage = () => {
         }));
     }; 
 
+    const handleAnalysisInputChange = (e) => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        setAnalysisInput((prevInputValues) => ({
+            ...prevInputValues,
+            [name]: value,
+        }));
+    }; 
+
     const handleDatabaseChange = (event) => {
         const { value } = event.target;
 
@@ -162,7 +181,7 @@ const FrontPage = () => {
 
     return (
 
-        <div>
+        <div className={"front-page-input" }>
             <h1>Database Selection</h1>
 
             <FormControl fullWidth>
@@ -224,34 +243,34 @@ const FrontPage = () => {
                     <label htmlFor="SafetyFactor">Safety Factor</label>
                     <input type="text" id="SafetyFactor" name="SafetyFactor" value={inputValues.SafetyFactor} onChange={handleInputChange} />
 
-                    <button type="submit">Calculate</button>
                 </form>
 
                 <form onSubmit={handleSubmission}>
-                    <label htmlFor="OuterDiameter">Internal Corrosion Rate (mm/yr)</label>
-                    <input type="text" id="OuterDiameter" name="OuterDiameter" value={inputValues.OuterDiameter} onChange={handleInputChange} />
+                    <label htmlFor="InternalCorrosionRate">Internal Corrosion Rate (mm/yr)</label>
+                    <input type="text" id="InternalCorrosionRate" name="InternalCorrosionRate" value={analysisInput.InternalCorrosionRate} onChange={handleAnalysisInputChange} />
 
-                    <label htmlFor="WallThickness">External Corrosion Rate (mm/yr)</label>
-                    <input type="text" id="WallThickness" name="WallThickness" value={inputValues.WallThickness} onChange={handleInputChange} />
+                    <label htmlFor="ExternalCorrosionRate">External Corrosion Rate (mm/yr)</label>
+                    <input type="text" id="ExternalCorrosionRate" name="ExternalCorrosionRate" value={analysisInput.ExternalCorrosionRate} onChange={handleAnalysisInputChange} />
 
-                    <label htmlFor="YieldStrength">Stress Corrosion Cracking Rate (mm/yr)</label>
-                    <input type="text" id="YieldStrength" name="YieldStrength" value={inputValues.YieldStrength} onChange={handleInputChange} />
+                    <label htmlFor="StressCorrosionCrackingRate">Stress Corrosion Cracking Rate (mm/yr)</label>
+                    <input type="text" id="StressCorrosionCrackingRate" name="StressCorrosionCrackingRate" value={analysisInput.StressCorrosionCrackingRate} onChange={handleAnalysisInputChange} />
 
-                    <label htmlFor="FullSizedCVN">Paris Law Coefficient (Pa,sqr(m))</label>
-                    <input type="text" id="FullSizedCVN" name="FullSizedCVN" value={inputValues.FullSizedCVN} onChange={handleInputChange} />
+                    <label htmlFor="ParisLawCoefficient">Paris Law Coefficient (Pa,sqr(m))</label>
+                    <input type="text" id="ParisLawCoefficient" name="ParisLawCoefficient" value={analysisInput.ParisLawCoefficient} onChange={handleAnalysisInputChange} />
 
-                    <label htmlFor="PressureOfInterest">Paris Law Exponent</label>
-                    <input type="text" id="PressureOfInterest" name="PressureOfInterest" value={inputValues.PressureOfInterest} onChange={handleInputChange} />
+                    <label htmlFor="ParisLawExponent">Paris Law Exponent</label>
+                    <input type="text" id="ParisLawExponent" name="ParisLawExponent" value={analysisInput.ParisLawExponent} onChange={handleAnalysisInputChange} />
 
-                    <label htmlFor="SafetyFactor">Cyclic Index (cycles/year)</label>
-                    <input type="text" id="SafetyFactor" name="SafetyFactor" value={inputValues.SafetyFactor} onChange={handleInputChange} />
+                    <label htmlFor="CyclicIndex">Cyclic Index (cycles/year)</label>
+                    <input type="text" id="CyclicIndex" name="CyclicIndex" value={analysisInput.CyclicIndex} onChange={handleAnalysisInputChange} />
 
-                    <label htmlFor="SafetyFactor">Basis of Cyclic Index (%SMYS)</label>
-                    <input type="text" id="SafetyFactor" name="SafetyFactor" value={inputValues.SafetyFactor} onChange={handleInputChange} />
+                    <label htmlFor="BasisOfCyclicIndex">Basis of Cyclic Index (%SMYS)</label>
+                    <input type="text" id="BasisOfCyclicIndex" name="BasisOfCyclicIndex" value={analysisInput.BasisOfCyclicIndex} onChange={handleAnalysisInputChange} />
 
-                    <button type="submit">Calculate</button>
                 </form>
             </div>
+            <button type="submit" onClick={handleSubmission}>Calculate</button>
+
     </div>
   );
 };

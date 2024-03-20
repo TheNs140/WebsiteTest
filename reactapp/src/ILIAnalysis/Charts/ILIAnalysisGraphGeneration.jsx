@@ -46,7 +46,7 @@ const DownloadSelection = [
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Title);
 
-function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailurePressure, metalLoss, B31GCriticalDepthCalculations, InputList }) {
+function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailurePressure, metalLoss, B31GCriticalDepthCalculations, InputList, InputAnalysisList }) {
 
     const [viewState, setViewState] = React.useState([]);
     const [CheckBoxState, setCheckBoxState] = React.useState([]);
@@ -277,18 +277,32 @@ function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailur
 
 
     //This is generating the list for CorrosionDepthListWithOdometer
-    let RemainingLifeCalculationVSOdometerData = metalLoss.map((metalloss, index) => {
+    let InternalRemainingLifeCalculationVSOdometerData = metalLoss.filter((element => element.featureRadial == "Internal")).map((metalloss, index) => {
         let odometer = "";
         let corrosionDepth = "";
         if (metalLoss !== 'undefined') {
             odometer = metalloss.odometer;
-            corrosionDepth = (B31GCriticalDepthCalculations[index].CriticalDepth - (metalloss.depth * metalloss.wallThickness)) / 0.15;
+            corrosionDepth = (B31GCriticalDepthCalculations[index].CriticalDepth - (metalloss.depth * metalloss.wallThickness)) / InputAnalysisList.InternalCorrosionRate;
         }
         // Combine values as needed
         return {
             RemainingLife: corrosionDepth,
             Odometer: odometer,
-            featureRadial: metalloss.featureRadial,
+            // Add more properties as needed
+        };
+    });
+
+    let ExternalRemainingLifeCalculationVSOdometerData = metalLoss.filter((element => element.featureRadial == "External")).map((metalloss, index) => {
+        let odometer = "";
+        let corrosionDepth = "";
+        if (metalLoss !== 'undefined') {
+            odometer = metalloss.odometer;
+            corrosionDepth = (B31GCriticalDepthCalculations[index].CriticalDepth - (metalloss.depth * metalloss.wallThickness)) / InputAnalysisList.ExternalCorrosionRate;
+        }
+        // Combine values as needed
+        return {
+            RemainingLife: corrosionDepth,
+            Odometer: odometer,
             // Add more properties as needed
         };
     });
@@ -302,7 +316,7 @@ function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailur
         datasets: [
             {
                 label: 'Internal Remaining Life',
-                data: RemainingLifeCalculationVSOdometerData.filter((element => element.featureRadial == "Internal")),
+                data: InternalRemainingLifeCalculationVSOdometerData,
                 parsing: {
                     xAxisKey: 'Odometer',
                     yAxisKey: 'RemainingLife',
@@ -313,7 +327,7 @@ function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailur
             },
             {
                 label: 'External Remaining Life',
-                data: RemainingLifeCalculationVSOdometerData.filter((element => element.featureRadial == "External")),
+                data: ExternalRemainingLifeCalculationVSOdometerData,
                 parsing: {
                     xAxisKey: 'Odometer',
                     yAxisKey: 'RemainingLife',
@@ -353,16 +367,18 @@ function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailur
 
 
 
-
-    let RemainingLifeHistogramData = metalLoss.map((metalloss, index) => {
+    let InternalRemainingLifeData = metalLoss.filter((element => element.featureRadial == 'Internal')).map((metalloss, index) => {
         return {
             featureRadial: metalloss.featureRadial,
-            remainingLife: (B31GCriticalDepthCalculations[index].CriticalDepth - (metalloss.depth * metalloss.wallThickness)) / 0.15,
+            remainingLife: (B31GCriticalDepthCalculations[index].CriticalDepth - (metalloss.depth * metalloss.wallThickness)) / InputAnalysisList.InternalCorrosionRate,
         }
     });
-
-    let InternalRemainingLifeData = RemainingLifeHistogramData.filter((element => element.featureRadial == 'Internal'))
-    let ExternalRemainingLifeData = RemainingLifeHistogramData.filter((element => element.featureRadial == 'External'))
+    let ExternalRemainingLifeData = metalLoss.filter((element => element.featureRadial == 'External')).map((metalloss, index) => {
+        return {
+            featureRadial: metalloss.featureRadial,
+            remainingLife: (B31GCriticalDepthCalculations[index].CriticalDepth - (metalloss.depth * metalloss.wallThickness)) / InputAnalysisList.ExternalCorrosionRate,
+        }
+    });
 
     //This Variable Categorizes the Internal Remaining Life Data into 8 categories
     let InternalRemainingLifeDataCount = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -379,24 +395,24 @@ function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailur
         if (6 < InternalRemainingLifeData[i].remainingLife && InternalRemainingLifeData[i].remainingLife < 8) {
             InternalRemainingLifeDataCount[3] += 1
         }
-        if (8 < InternalRemainingLifeData[i].remainingLife < 10) {
+        if (8 < InternalRemainingLifeData[i].remainingLife && InternalRemainingLifeData[i].remainingLife < 10) {
             InternalRemainingLifeDataCount[4] += 1
         }
         if (10 < InternalRemainingLifeData[i].remainingLife && InternalRemainingLifeData[i].remainingLife < 15) {
-            InternalRemainingLifeDataCount[2] += 1
+            InternalRemainingLifeDataCount[5] += 1
         }
         if (15 < InternalRemainingLifeData[i].remainingLife && InternalRemainingLifeData[i].remainingLife < 20) {
-            InternalRemainingLifeDataCount[3] += 1
+            InternalRemainingLifeDataCount[6] += 1
         }
         if (20 < InternalRemainingLifeData[i].remainingLife) {
-            InternalRemainingLifeDataCount[4] += 1
+            InternalRemainingLifeDataCount[7] += 1
         }
 
     }
 
 
     //This Variable Categorizes the External Remaining Life Data into 8 categories
-    let ExternalRemainingLifeDataCount = [0, 0, 0, 0, 0]
+    let ExternalRemainingLifeDataCount = [0, 0, 0, 0, 0, 0, 0, 0]
     for (let i = 0; i < ExternalRemainingLifeData.length; i++) {
         if (ExternalRemainingLifeData[i].remainingLife < 2) {
             ExternalRemainingLifeDataCount[0] += 1
@@ -410,17 +426,17 @@ function ILIAnalysisGraphGeneration({ LeakRuptureBoundryList, B31GModifiedFailur
         if (6 < ExternalRemainingLifeData[i].remainingLife && ExternalRemainingLifeData[i].remainingLife < 8) {
             ExternalRemainingLifeDataCount[3] += 1
         }
-        if (8 < ExternalRemainingLifeData[i].remainingLife < 10) {
+        if (8 < ExternalRemainingLifeData[i].remainingLife && ExternalRemainingLifeData[i].remainingLife < 10) {
             ExternalRemainingLifeDataCount[4] += 1
         }
         if (10 < ExternalRemainingLifeData[i].remainingLife && ExternalRemainingLifeData[i].remainingLife < 15) {
-            ExternalRemainingLifeDataCount[2] += 1
+            ExternalRemainingLifeDataCount[5] += 1
         }
         if (15 < ExternalRemainingLifeData[i].remainingLife && ExternalRemainingLifeData[i].remainingLife < 20) {
-            ExternalRemainingLifeDataCount[3] += 1
+            ExternalRemainingLifeDataCount[6] += 1
         }
         if (20 < ExternalRemainingLifeData[i].remainingLife) {
-            ExternalRemainingLifeDataCount[4] += 1
+            ExternalRemainingLifeDataCount[7] += 1
         }
 
     }
